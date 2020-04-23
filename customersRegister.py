@@ -13,7 +13,6 @@ class CustomerRegister:
         self.cust_app.geometry('650x200')
         self.cust_app.title('Customer Registration Panel')
 
-
         db = CustomersDatabase('mydatavase.db')
 
         # creating functions
@@ -23,8 +22,6 @@ class CustomerRegister:
             email_entry.delete(0, END)
             access_key_entry.delete(0, END)
             phone_entry.delete(0, END)
-
-
 
         def add_cust():
             if name_text.get() == '' or lastname_text.get() == '' or email_text.get() == '' or access_key_text.get() == '' or phone_text.get() == '':
@@ -40,32 +37,28 @@ class CustomerRegister:
 
             try:
                 if isinstance(int(phone_text.get()), int) == False:
-                    tkinter.messagebox.showerror("Nuber can't include characters", "Please write your number using.. numbers :)")
+                    tkinter.messagebox.showerror("Nuber can't include characters",
+                                                 "Please write your number using.. numbers :)")
                     return
             except:
-                tkinter.messagebox.showerror("Nuber can't include characters", "Please write your number using.. numbers :)")
+                tkinter.messagebox.showerror("Nuber can't include characters",
+                                             "Please write your number using.. numbers :)")
                 return
-            if(len(access_key_text.get())<3):
+            if (len(access_key_text.get()) < 3):
                 tkinter.messagebox.showerror("Access key fail",
                                              "Access key must have at least 3 digits")
                 return
 
-
-
-            if searchCust()!= -1:
-
+            if searchCust() != -1:
                 db.insert(name_text.get().capitalize(), lastname_text.get().capitalize(), email_text.get(),
-                      access_key_text.get(), phone_text.get())
+                          access_key_text.get(), phone_text.get())
                 tkinter.messagebox.showinfo("Registration Successful", "Success!")
                 s.logged_id = db.getID(email_text.get(), access_key_text.get())
-            
-
 
                 self.cust_app.destroy()
                 self.cust_app = Tk()
                 application = cd.CarsDisplayer(self.cust_app)
                 self.cust_app.mainloop()
-
 
         def searchCust():
 
@@ -81,8 +74,6 @@ class CustomerRegister:
 
             self.cust_app.mainloop()
 
-
-
         def iExit():
             iExit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
             if iExit > 0:
@@ -95,12 +86,10 @@ class CustomerRegister:
         mainFrame = Frame(self.cust_app)
         mainFrame.grid()
 
-        dataFrame = Frame(mainFrame, bd=0, width=700, height=100,padx=50, relief=RIDGE)
+        dataFrame = Frame(mainFrame, bd=0, width=700, height=100, padx=50, relief=RIDGE)
         dataFrame.pack(side=TOP)
         buttonFrame = Frame(mainFrame, width=735, height=40, bd=1, relief=RIDGE)
         buttonFrame.pack(side=TOP)
-
-
 
         # part
         name_text = StringVar()
@@ -133,22 +122,19 @@ class CustomerRegister:
         phone_entry = Entry(dataFrame, textvariable=phone_text, font=('calibri', 12))
         phone_entry.grid(row=2, column=1)
 
-
         # buttons
 
         add_btn = Button(buttonFrame, text='Create Account', width=12, command=add_cust)
         add_btn.grid(column=0, row=0, sticky=W)
 
-
         clear_btn = Button(buttonFrame, text='Clear', width=12, command=clear_text)
         clear_btn.grid(column=1, row=0, sticky=W)
 
-        menu_btn = Button(buttonFrame, text='Menu', width=12,command=back)
+        menu_btn = Button(buttonFrame, text='Menu', width=12, command=back)
         menu_btn.grid(column=2, row=0, sticky=W)
 
         exit_btn = Button(buttonFrame, text='Exit', width=12, command=iExit, bg='firebrick2')
         exit_btn.grid(column=3, row=0, sticky=W)
-
 
 
 if __name__ == "__main__":
