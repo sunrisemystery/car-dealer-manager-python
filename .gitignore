@@ -26,6 +26,15 @@
 #.idea/**/gradle.xml
 #.idea/**/libraries
 
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
 
 
 # CMake
