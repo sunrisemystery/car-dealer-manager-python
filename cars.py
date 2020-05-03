@@ -1,8 +1,6 @@
 from tkinter import *
 import tkinter.messagebox
 from cars_db import CarsDatabase
-import sqlite3
-import transactions_db
 import adminTransactionsGUI as atg
 
 
@@ -11,8 +9,6 @@ class Cars:
         self.car_app=car_app
         self.car_app.geometry('750x450')
         self.car_app.title('Car Manager')
-        #self.db = CarsDatabase('mydatavase.db')
-        #self.car_app.config(bg='light grey')
 
 
         db=CarsDatabase('mydatavase.db')

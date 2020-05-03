@@ -3,9 +3,6 @@ import tkinter.messagebox
 from cars_db import CarsDatabase
 from transactions_db import TransactionsDatabase
 import cars as cr
-import shared as s
-import sqlite3
-
 
 class TransactionDisplayer:
     def __init__(self, car_app):

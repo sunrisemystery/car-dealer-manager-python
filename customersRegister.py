@@ -2,7 +2,6 @@ from tkinter import *
 import tkinter.messagebox
 from customers_db import CustomersDatabase
 import carsDisplayer as cd
-import sqlite3
 import shared as s
 import mainTest2 as test
 

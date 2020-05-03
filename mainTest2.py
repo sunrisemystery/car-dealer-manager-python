@@ -1,11 +1,7 @@
 from tkinter import *
-import tkinter.messagebox
-from cars_db import CarsDatabase
-from customers_db import CustomersDatabase
 import customerLogin as cl
 import customersRegister as cr
-import cars as cars
-import sqlite3
+
 
 
 class MainTest:
@@ -22,8 +18,6 @@ class MainTest:
             self.mainapp.destroy()
             self.mainapp=Tk()
             application=cl.CustomerLogin(self.mainapp)
-
-            #self.mainapp.deiconify()
 
             self.mainapp.mainloop()
 

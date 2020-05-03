@@ -5,7 +5,7 @@ from transactions_db import TransactionsDatabase
 import customerTransactionGUI as ctg
 import customerEditAccount as cea
 import shared as s
-import sqlite3
+
 
 
 class CarsDisplayer:

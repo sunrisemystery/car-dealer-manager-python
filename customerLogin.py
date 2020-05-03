@@ -6,7 +6,6 @@ import cars as cars
 import shared as s
 import mainTest2 as test
 
-import sqlite3
 
 
 

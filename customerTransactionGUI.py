@@ -4,7 +4,6 @@ from cars_db import CarsDatabase
 from transactions_db import TransactionsDatabase
 import carsDisplayer as cd
 import shared as s
-import sqlite3
 
 
 class TransactionCustomerDisplayer:
