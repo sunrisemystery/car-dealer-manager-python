@@ -3,6 +3,8 @@ Python project with Tkinter and SQLite
 
 Project written in PyCharm.
 
+To run this project, run MainTest2.py
+
 Admin can update, delete, add a new car to the database and delete user's transactions.
 
 User can create a new account or log in to existing account.
