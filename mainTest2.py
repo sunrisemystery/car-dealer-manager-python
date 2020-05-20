@@ -1,59 +1,56 @@
-from tkinter import *
-import customerLogin as cl
-import customersRegister as cr
+import tkinter as tk
+import customerLogin
+import customersRegister
+import shared
 
+GEOMETRY_SIZE = '400x150'
 
 
 class MainTest:
 
-    def __init__(self, mainapp):
-        self.mainapp = mainapp
-        self.mainapp.geometry('400x150')
-        self.mainapp.title('Main Panel')
+    def __init__(self, main_app):
+        self.main_app = main_app
+        self.main_app.geometry(GEOMETRY_SIZE)
+        self.main_app.title('Main Panel')
+        self.main_app.configure(bg=shared.BG_COLOR)
+        self.application = 0
 
+        def login():
+            self.main_app.destroy()
+            self.main_app = tk.Tk()
+            self.application = customerLogin.CustomerLogin(self.main_app)
 
+            self.main_app.mainloop()
 
-        def Login():
+        def register():
+            self.main_app.destroy()
+            self.main_app = tk.Tk()
+            self.application = customersRegister.CustomerRegister(self.main_app)
+            self.main_app.mainloop()
 
-            self.mainapp.destroy()
-            self.mainapp=Tk()
-            application=cl.CustomerLogin(self.mainapp)
+        main_frame = tk.Frame(self.main_app)
+        main_frame.configure(bg=shared.BG_COLOR)
+        main_frame.grid()
 
-            self.mainapp.mainloop()
+        label_frame = tk.Frame(main_frame, bd=0, relief=tk.RIDGE, width=440, height=60,
+                               padx=100, pady=10, bg=shared.BG_COLOR2)
 
+        label_frame.pack(side=tk.TOP)
 
-        def Register():
-            self.mainapp.destroy()
-            self.mainapp=Tk()
-            application=cr.CustomerRegister(self.mainapp)
-            self.mainapp.mainloop()
+        button_frame = tk.Frame(main_frame, bd=0, width=400, height=100, padx=20, pady=30,bg=shared.BG_COLOR)
+        button_frame.pack(side=tk.BOTTOM)
 
-
-
-
-
-        mainFrame = Frame(self.mainapp)
-        mainFrame.grid()
-
-        labelFrame=Frame(mainFrame,bd=0,relief=RIDGE,width=440,height=60,padx=100,pady=10,bg='light grey')
-        labelFrame.pack(side=TOP)
-
-        buttonFrame=Frame(mainFrame,bd=0,width=400,height=100,padx=20,pady=30)
-        buttonFrame.pack(side=BOTTOM)
-
-        label=Label(labelFrame,text="Customer Login and Registration Panel",bg='light grey')
-        label.grid(row=0,column=0)
-        cars_btn = Button(buttonFrame, text='Register', width=12,padx=3, command=Register)
+        label = tk.Label(label_frame, text="Customer Login and Registration Panel", bg=shared.BG_COLOR2)
+        label.grid(row=0, column=0)
+        cars_btn = tk.Button(button_frame, text='Register', width=12, padx=3, command=register,bg=shared.BG_COLOR)
         cars_btn.grid(column=9, row=5)
 
+        login_btn = tk.Button(button_frame, text='Login', width=12, command=login,bg=shared.BG_COLOR)
+        login_btn.grid(column=6, row=5)
 
-        login_btn=Button(buttonFrame, text='Login', width=12, command=Login)
-        login_btn.grid(column=6,row=5)
 
-
-if __name__=="__main__":
-    car_app=Tk()
-    application=MainTest(car_app)
+if __name__ == "__main__":
+    car_app = tk.Tk()
+    application = MainTest(car_app)
 
     car_app.mainloop()
-

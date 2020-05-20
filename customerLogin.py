@@ -1,135 +1,121 @@
-from tkinter import *
+import tkinter as tk
 import tkinter.messagebox
-from customers_db import CustomersDatabase
-import carsDisplayer as cd
-import cars as cars
-import shared as s
-import mainTest2 as test
+import customers_db
+import carsDisplayer
+import cars
+import shared
+import mainTest2
 
-
-
+GEOMETRY_SIZE = '420x200'
+DATABASE = 'mydatavase.db'
+FONT_SIZE = ('calibri', 12)
+BG_BUTTON = 'HotPink3'
 
 class CustomerLogin:
     def __init__(self, cust_app):
         self.cust_app = cust_app
-        self.cust_app.geometry('420x200')
+        self.cust_app.geometry(GEOMETRY_SIZE)
+        self.cust_app.configure(bg=shared.BG_COLOR)
         self.cust_app.title('Customer Login Panel')
 
-
-        db = CustomersDatabase('mydatavase.db')
+        db = customers_db.CustomersDatabase(DATABASE)
 
         # creating functions
         def clear_text():
 
-            email_entry.delete(0, END)
-            access_key_entry.delete(0, END)
-
+            email_entry.delete(0, tk.END)
+            access_key_entry.delete(0, tk.END)
 
         def add_cust():
             if email_text.get() == '' or access_key_text.get() == '':
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
- 
 
-            searchCust()
+            search_cust()
 
+        def search_cust():
 
-        def searchCust():
-
-            row=db.searchUser(email_text.get(),access_key_text.get())
+            row = db.search_user(email_text.get(), access_key_text.get())
             if not row:
 
                 tkinter.messagebox.showerror("Error", "Wrong email or access key!")
                 return
             else:
-                row2=db.isAdmin(email_text.get(),access_key_text.get())
-
-
+                row2 = db.is_admin(email_text.get(), access_key_text.get())
 
                 if not row2:
                     tkinter.messagebox.showinfo("Login Successful", "Success!")
-                   
-                    
-                    s.logged_id=db.getID(email_text.get(),access_key_text.get())
-                    
+
+                    shared.logged_id = db.get_id(email_text.get(), access_key_text.get())
 
                     self.cust_app.destroy()
-                    self.cust_app=Tk()
-                    application=cd.CarsDisplayer(self.cust_app)
+                    self.cust_app = tk.Tk()
+                    carsDisplayer.CarsDisplayer(self.cust_app)
                     self.cust_app.mainloop()
                 else:
                     tkinter.messagebox.showinfo("Login Successful", "Success! - Admin Permission")
                     self.cust_app.destroy()
-                    self.cust_app=Tk()
-                    application=cars.Cars(self.cust_app)
+                    self.cust_app = tk.Tk()
+                    cars.Cars(self.cust_app)
                     self.cust_app.mainloop()
+
         def back():
             self.cust_app.destroy()
-            self.cust_app = Tk()
-            application = test.MainTest(self.cust_app)
+            self.cust_app = tk.Tk()
+            mainTest2.MainTest(self.cust_app)
 
             self.cust_app.mainloop()
 
-
-
-
-        def iExit():
-            iExit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
-            if iExit > 0:
-
+        def i_exit_fun():
+            i_exit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
+            if i_exit > 0:
                 cust_app.destroy()
                 return
 
         # Create window
 
         # frames
-        mainFrame = Frame(self.cust_app)
-        mainFrame.grid()
+        main_frame = tk.Frame(self.cust_app)
+        main_frame.configure(bg=shared.BG_COLOR)
+        main_frame.grid()
 
-        dataFrame = Frame(mainFrame, bd=0, width=700, height=100,padx=50, relief=RIDGE)
-        dataFrame.pack(side=TOP)
-        buttonFrame = Frame(mainFrame, width=735, height=40, bd=1, relief=RIDGE)
-        buttonFrame.pack(side=TOP)
-
-
+        data_frame = tk.Frame(main_frame, bd=0, width=700, height=100, padx=50, relief=tk.RIDGE,bg=shared.BG_COLOR)
+        data_frame.pack(side=tk.TOP)
+        button_frame = tk.Frame(main_frame, width=735, height=40, bd=1, relief=tk.RIDGE,bg=shared.BG_COLOR)
+        button_frame.pack(side=tk.TOP)
 
         # part
 
-
-
-        email_text = StringVar()
-        email_label = Label(dataFrame, text='Email', font=('calibri', 12),pady=10,padx=10)
-        email_label.grid(row=1, column=0, sticky=E)
-        email_entry = Entry(dataFrame, textvariable=email_text, font=('calibri', 12))
+        email_text = tk.StringVar()
+        email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, pady=10, padx=10,bg=shared.BG_COLOR)
+        email_label.grid(row=1, column=0, sticky=tk.E)
+        email_entry = tk.Entry(data_frame, textvariable=email_text, font=FONT_SIZE,bg=shared.LISTBOX_COLOR)
         email_entry.grid(row=1, column=1)
 
-        access_key_text = StringVar()
-        access_key_label = Label(dataFrame, text='Access Key', font=('calibri', 12),pady=20)
-        access_key_label.grid(row=2, column=0, sticky=E)
-        access_key_entry = Entry(dataFrame, textvariable=access_key_text, font=('calibri', 12))
+        access_key_text = tk.StringVar()
+        access_key_label = tk.Label(data_frame, text='Access Key', font=FONT_SIZE, pady=20,bg=shared.BG_COLOR)
+        access_key_label.grid(row=2, column=0, sticky=tk.E)
+        access_key_entry = tk.Entry(data_frame, textvariable=access_key_text, font=FONT_SIZE,bg=shared.LISTBOX_COLOR)
         access_key_entry.grid(row=2, column=1)
-
-
 
         # buttons
 
-        add_btn = Button(buttonFrame, text='Login', width=12, command=add_cust,padx=10)
-        add_btn.grid(column=0, row=0, sticky=W)
+        add_btn = tk.Button(button_frame, text='Login', width=12, command=add_cust, padx=10,bg=shared.BG_COLOR)
+        add_btn.grid(column=0, row=0, sticky=tk.W)
 
+        clear_btn = tk.Button(button_frame, text='Clear', width=12, command=clear_text,bg=shared.BG_COLOR)
+        clear_btn.grid(column=1, row=0, sticky=tk.W)
 
-        clear_btn = Button(buttonFrame, text='Clear', width=12, command=clear_text)
-        clear_btn.grid(column=1, row=0, sticky=W)
+        menu_btn = tk.Button(button_frame, text='Menu', width=12, command=back,bg=shared.BG_COLOR)
+        menu_btn.grid(column=2, row=0, sticky=tk.W)
 
-        menu_btn = Button(buttonFrame, text='Menu', width=12,command=back)
-        menu_btn.grid(column=2, row=0, sticky=W)
-
-        exit_btn = Button(buttonFrame, text='Exit', width=12, command=iExit, bg='firebrick2')
-        exit_btn.grid(column=3, row=0, sticky=W)
-
+        exit_btn = tk.Button(button_frame, text='Exit', width=12, command=i_exit_fun,
+                             bg=BG_BUTTON)
+        exit_btn.grid(column=3, row=0, sticky=tk.W)
 
 
 if __name__ == "__main__":
-    cust_app = Tk()
+    cust_app = tk.Tk()
     application = CustomerLogin(cust_app)
 
     cust_app.mainloop()
