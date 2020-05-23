@@ -37,15 +37,19 @@ class MainTest:
 
         label_frame.pack(side=tk.TOP)
 
-        button_frame = tk.Frame(main_frame, bd=0, width=400, height=100, padx=20, pady=30,bg=shared.BG_COLOR)
+        button_frame = tk.Frame(main_frame, bd=0, width=400, height=100, padx=20, pady=30,
+                                bg=shared.BG_COLOR)
         button_frame.pack(side=tk.BOTTOM)
 
-        label = tk.Label(label_frame, text="Customer Login and Registration Panel", bg=shared.BG_COLOR2)
+        label = tk.Label(label_frame, text="Customer Login and Registration Panel",
+                         bg=shared.BG_COLOR2)
         label.grid(row=0, column=0)
-        cars_btn = tk.Button(button_frame, text='Register', width=12, padx=3, command=register,bg=shared.BG_COLOR)
+        cars_btn = tk.Button(button_frame, text='Register', width=12, padx=3, command=register,
+                             bg=shared.BG_COLOR)
         cars_btn.grid(column=9, row=5)
 
-        login_btn = tk.Button(button_frame, text='Login', width=12, command=login,bg=shared.BG_COLOR)
+        login_btn = tk.Button(button_frame, text='Login', width=12, command=login,
+                              bg=shared.BG_COLOR)
         login_btn.grid(column=6, row=5)
 
 

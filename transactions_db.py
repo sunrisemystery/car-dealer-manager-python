@@ -58,5 +58,3 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
 
     def __del__(self):
         self.conn.close()
-
-

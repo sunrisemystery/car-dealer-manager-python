@@ -1,11 +1,12 @@
 import tkinter as tk
 import tkinter.messagebox
+import tkinter.ttk
 import cars_db
 import transactions_db
 import carsDisplayer
 import shared
 
-GEOMETRY_SIZE = '700x450'
+GEOMETRY_SIZE = '620x400'
 DATABASE = 'mydatavase.db'
 BG_BUTTON = 'HotPink3'
 
@@ -22,13 +23,17 @@ class TransactionCustomerDisplayer:
 
         def select_item(event):
             global selected_item
-            index = cars_list.curselection()[0]
-            selected_item = cars_list.get(index)
+            try:
+                if table.selection() != ():
+                    selected_item = table.set(table.selection())
+            except:
+                pass
 
         def my_trans():
-            cars_list.delete(0, tk.END)
-            for rows in trans_db.search_transactions(shared.logged_id):
-                cars_list.insert(tk.END, rows)
+            for i in table.get_children():
+                table.delete(i)
+            for record in trans_db.search_transactions(shared.logged_id):
+                table.insert('', tk.END, values=record)
 
         def i_exit_fun():
             i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
@@ -50,36 +55,37 @@ class TransactionCustomerDisplayer:
         main_frame.configure(bg=shared.BG_COLOR)
         main_frame.grid()
 
-        button_frame = tk.Frame(main_frame, width=735, height=40, bd=1, relief=tk.RIDGE,bg=shared.BG_COLOR)
+        button_frame = tk.Frame(main_frame, width=620, height=40, bd=1, relief=tk.RIDGE,
+                                bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
         #
-        listbox_frame = tk.Frame(main_frame, bd=0, width=735, height=310,
-                                 padx=80, pady=10, relief=tk.RIDGE,bg=shared.BG_COLOR)
-        listbox_frame.pack(side=tk.TOP)
+        table_frame = tk.Frame(main_frame, bd=0, width=735, height=310,
+                               padx=80, pady=10, relief=tk.RIDGE, bg=shared.BG_COLOR)
+        table_frame.pack(side=tk.TOP)
         #
 
         # -----LISTBOX------------------
-        cars_list = tk.Listbox(listbox_frame, height=15, width=90)
-        cars_list.configure(bg=shared.LISTBOX_COLOR)
+        cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
+        col_size = [(25, 25), (50, 50), (100, 100), (50, 50), (50, 50),
+                    (50, 50), (111, 111)]
+        table = tkinter.ttk.Treeview(table_frame, columns=cols, show='headings', height=10)
+        table.grid()
 
-        cars_list.grid(row=0, column=0, columnspan=3, rowspan=6)
+        for x, y in zip(cols, col_size):
+            table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
+            table.heading(x, text=x)
 
-        # creating scrollbar
-        scrollbar = tk.Scrollbar(listbox_frame)
-        scrollbar.grid(row=3, column=3, sticky='ns')
+        scroll_y = tk.Scrollbar(table_frame, orient=tk.VERTICAL)
+        scroll_y.configure(command=table.yview())
+        scroll_y.grid(row=0, column=3, sticky='ns')
 
-        # set scroll to listbox
-
-        cars_list.configure(yscrollcommand=scrollbar.set)
-        scrollbar.configure(command=cars_list.yview)
-
-        # bind select
-
-        cars_list.bind('<<ListboxSelect>>', select_item)
+        table.configure(yscrollcommand=scroll_y.set)
+        table.bind('<ButtonRelease-1>', select_item)
 
         # buttons
 
-        back_btn = tk.Button(button_frame, text='< Back', width=15, command=back,bg=shared.BG_COLOR)
+        back_btn = tk.Button(button_frame, text='< Back', width=12, command=back,
+                             bg=shared.BG_COLOR)
         back_btn.grid(column=1, row=0, sticky=tk.W)
         #
 
@@ -89,10 +95,3 @@ class TransactionCustomerDisplayer:
         # commands
 
         my_trans()
-
-
-if __name__ == "__main__":
-    car_disp = tk.Tk()
-    application = TransactionCustomerDisplayer(car_disp)
-
-    car_disp.mainloop()

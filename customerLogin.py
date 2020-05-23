@@ -11,6 +11,7 @@ DATABASE = 'mydatavase.db'
 FONT_SIZE = ('calibri', 12)
 BG_BUTTON = 'HotPink3'
 
+
 class CustomerLogin:
     def __init__(self, cust_app):
         self.cust_app = cust_app
@@ -79,43 +80,44 @@ class CustomerLogin:
         main_frame.configure(bg=shared.BG_COLOR)
         main_frame.grid()
 
-        data_frame = tk.Frame(main_frame, bd=0, width=700, height=100, padx=50, relief=tk.RIDGE,bg=shared.BG_COLOR)
+        data_frame = tk.Frame(main_frame, bd=0, width=700, height=100, padx=50, relief=tk.RIDGE,
+                              bg=shared.BG_COLOR)
         data_frame.pack(side=tk.TOP)
-        button_frame = tk.Frame(main_frame, width=735, height=40, bd=1, relief=tk.RIDGE,bg=shared.BG_COLOR)
+        button_frame = tk.Frame(main_frame, width=420, height=40, bd=1, padx=22,
+                                bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
 
         # part
 
         email_text = tk.StringVar()
-        email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, pady=10, padx=10,bg=shared.BG_COLOR)
+        email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, pady=10, padx=10,
+                               bg=shared.BG_COLOR)
         email_label.grid(row=1, column=0, sticky=tk.E)
-        email_entry = tk.Entry(data_frame, textvariable=email_text, font=FONT_SIZE,bg=shared.LISTBOX_COLOR)
+        email_entry = tk.Entry(data_frame, textvariable=email_text, font=FONT_SIZE,
+                               bg=shared.LISTBOX_COLOR)
         email_entry.grid(row=1, column=1)
 
         access_key_text = tk.StringVar()
-        access_key_label = tk.Label(data_frame, text='Access Key', font=FONT_SIZE, pady=20,bg=shared.BG_COLOR)
+        access_key_label = tk.Label(data_frame, text='Access Key', font=FONT_SIZE, pady=20,
+                                    bg=shared.BG_COLOR)
         access_key_label.grid(row=2, column=0, sticky=tk.E)
-        access_key_entry = tk.Entry(data_frame, textvariable=access_key_text, font=FONT_SIZE,bg=shared.LISTBOX_COLOR)
+        access_key_entry = tk.Entry(data_frame, textvariable=access_key_text, font=FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
         access_key_entry.grid(row=2, column=1)
 
         # buttons
 
-        add_btn = tk.Button(button_frame, text='Login', width=12, command=add_cust, padx=10,bg=shared.BG_COLOR)
+        add_btn = tk.Button(button_frame, text='Login', width=12, command=add_cust, padx=0,
+                            bg=shared.BG_COLOR)
         add_btn.grid(column=0, row=0, sticky=tk.W)
 
-        clear_btn = tk.Button(button_frame, text='Clear', width=12, command=clear_text,bg=shared.BG_COLOR)
+        clear_btn = tk.Button(button_frame, text='Clear', width=12, command=clear_text,
+                              bg=shared.BG_COLOR)
         clear_btn.grid(column=1, row=0, sticky=tk.W)
 
-        menu_btn = tk.Button(button_frame, text='Menu', width=12, command=back,bg=shared.BG_COLOR)
+        menu_btn = tk.Button(button_frame, text='Menu', width=12, command=back, bg=shared.BG_COLOR)
         menu_btn.grid(column=2, row=0, sticky=tk.W)
 
         exit_btn = tk.Button(button_frame, text='Exit', width=12, command=i_exit_fun,
                              bg=BG_BUTTON)
         exit_btn.grid(column=3, row=0, sticky=tk.W)
-
-
-if __name__ == "__main__":
-    cust_app = tk.Tk()
-    application = CustomerLogin(cust_app)
-
-    cust_app.mainloop()
