@@ -1,3 +1,4 @@
+"""Defines class responsible for editing Customer's data. """
 import tkinter as tk
 import tkinter.messagebox
 import customers_db
@@ -12,16 +13,21 @@ BG_BUTTON = 'HotPink3'
 
 
 class CustomerEditAcc:
+    """This class displays Customer Edit Panel and contains
+        functionality for buttons."""
+
     def __init__(self, cust_app):
+        """Inits CustomerEditAcc"""
         self.cust_app = cust_app
         self.cust_app.geometry(GEOMETRY_SIZE)
         self.cust_app.configure(bg=shared.BG_COLOR)
         self.cust_app.title('Customer Edit Panel')
 
         db = customers_db.CustomersDatabase(DATABASE)
-        customerdata = db.user_data(shared.logged_id)
+        customer_data = db.user_data(shared.logged_id)
 
         def update_cust():
+            """Updates customer's data."""
             for field in TEXT_FIELDS:
                 if field.get() == '':
                     tkinter.messagebox.showerror("Required Fields", "Please include all fields")
@@ -51,12 +57,10 @@ class CustomerEditAcc:
                                              "Access key must have at least 3 digits")
                 return
 
-            # TODO: nie dziala z list comprehension
             db.update(shared.logged_id, name_text.get().capitalize(),
                       lastname_text.get().capitalize(),
                       email_text.get(),
                       access_key_text.get(), phone_text.get())
-            # db.update(shared.logged_id, *[f for f in TEXT_FIELDS_CAPITALIZED])
             tkinter.messagebox.showinfo("Update Successful", "Success!")
 
             self.cust_app.destroy()
@@ -65,12 +69,14 @@ class CustomerEditAcc:
             self.cust_app.mainloop()
 
         def back():
+            """Turns to Available Car List."""
             self.cust_app.destroy()
             self.cust_app = tk.Tk()
             carsDisplayer.CarsDisplayer(self.cust_app)
             self.cust_app.mainloop()
 
         def delete_acc():
+            """Deletes customer's account and exits application."""
             important = tkinter.messagebox.askyesno("Registration Panel",
                                                     "Do you want to delete your account? You "
                                                     "can't undo this")
@@ -80,6 +86,7 @@ class CustomerEditAcc:
                 return
 
         def back_menu():
+            """Turns back to login/registration panel."""
             self.cust_app.destroy()
             self.cust_app = tk.Tk()
             mainTest2.MainTest(self.cust_app)
@@ -100,8 +107,7 @@ class CustomerEditAcc:
                                 bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
 
-        # part
-        name_text = tk.StringVar(value=customerdata[1])
+        name_text = tk.StringVar(value=customer_data[1])
 
         name_label = tk.Label(data_frame, text='Name', font=FONT_SIZE, pady=20, bg=shared.BG_COLOR)
         name_label.grid(row=0, column=0, sticky=tk.E)
@@ -109,7 +115,7 @@ class CustomerEditAcc:
                               bg=shared.LISTBOX_COLOR)
         name_entry.grid(row=0, column=1)
 
-        lastname_text = tk.StringVar(value=customerdata[2])
+        lastname_text = tk.StringVar(value=customer_data[2])
 
         lastname_label = tk.Label(data_frame, text='Lastname', font=FONT_SIZE, bg=shared.BG_COLOR)
         lastname_label.grid(row=0, column=2, sticky=tk.E, padx=(30, 0))
@@ -117,7 +123,7 @@ class CustomerEditAcc:
                                   bg=shared.LISTBOX_COLOR)
         lastname_entry.grid(row=0, column=3)
 
-        email_text = tk.StringVar(value=customerdata[3])
+        email_text = tk.StringVar(value=customer_data[3])
 
         email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, bg=shared.BG_COLOR)
         email_label.grid(row=1, column=0, sticky=tk.E)
@@ -125,7 +131,7 @@ class CustomerEditAcc:
                                bg=shared.LISTBOX_COLOR)
         email_entry.grid(row=1, column=1)
 
-        access_key_text = tk.StringVar(value=customerdata[4])
+        access_key_text = tk.StringVar(value=customer_data[4])
 
         access_key_label = tk.Label(data_frame, text='Access Key', font=FONT_SIZE,
                                     bg=shared.BG_COLOR)
@@ -134,7 +140,7 @@ class CustomerEditAcc:
                                     bg=shared.LISTBOX_COLOR)
         access_key_entry.grid(row=1, column=3)
 
-        phone_text = tk.StringVar(value=customerdata[6])
+        phone_text = tk.StringVar(value=customer_data[6])
 
         phone_label = tk.Label(data_frame, text='Phone Number', font=FONT_SIZE, pady=20,
                                bg=shared.BG_COLOR)

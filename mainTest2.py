@@ -1,3 +1,4 @@
+"""Defines class responsible for Main Panel Window. """
 import tkinter as tk
 import customerLogin
 import customersRegister
@@ -7,8 +8,11 @@ GEOMETRY_SIZE = '400x150'
 
 
 class MainTest:
+    """This class displays Main Panel Window for customer and contains
+        functionality for buttons."""
 
     def __init__(self, main_app):
+        """Inits MainTest."""
         self.main_app = main_app
         self.main_app.geometry(GEOMETRY_SIZE)
         self.main_app.title('Main Panel')
@@ -16,6 +20,7 @@ class MainTest:
         self.application = 0
 
         def login():
+            """Displays Login Window."""
             self.main_app.destroy()
             self.main_app = tk.Tk()
             self.application = customerLogin.CustomerLogin(self.main_app)
@@ -23,6 +28,7 @@ class MainTest:
             self.main_app.mainloop()
 
         def register():
+            """Displays Registration Window."""
             self.main_app.destroy()
             self.main_app = tk.Tk()
             self.application = customersRegister.CustomerRegister(self.main_app)

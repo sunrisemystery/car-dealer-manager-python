@@ -1,3 +1,4 @@
+"""Defines class responsible for Car Manager Window for customer. """
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
@@ -16,7 +17,11 @@ BG_BUTTON = 'HotPink3'
 
 
 class CarsDisplayer:
+    """This class displays Available Car List Window for customer and contains
+        functionality for buttons."""
+
     def __init__(self, car_app):
+        """Inits CarsDisplayer."""
         self.car_app = car_app
         self.car_app.geometry(GEOMETRY_SIZE)
         self.car_app.title('Available Car List')
@@ -27,6 +32,7 @@ class CarsDisplayer:
 
         # creating functions
         def clear_text():
+            """Clears all entries."""
             brand_entry.delete(0, tk.END)
             model_entry.delete(0, tk.END)
             color_entry.delete(0, tk.END)
@@ -34,14 +40,16 @@ class CarsDisplayer:
             price_entry.delete(0, tk.END)
 
         def populate_list():
+            """Displays all cars which are in database."""
             for i in table.get_children():
                 table.delete(i)
-            for record in db.fetch_available():
+            for row in db.fetch_available():
                 table.insert('', tk.END,
-                             values=[record[0], record[1], record[2], record[3], record[4],
-                                     record[6]])
+                             values=[row[0], row[1], row[2], row[3], row[4],
+                                     row[6]])
 
         def select_item(event):
+            """Fills fields with selected car's data."""
 
             global selected_item
             if table.selection() != ():
@@ -73,12 +81,14 @@ class CarsDisplayer:
                                      row[6]])
 
         def my_trans():
+            """Turns to Transactions Panel."""
             self.car_app.destroy()
             self.car_app = tk.Tk()
             customerTransactionGUI.TransactionCustomerDisplayer(self.car_app)
             self.car_app.mainloop()
 
         def book_car():
+            """Books selected car"""
             try:
                 is_car = db.isout(selected_item[cols[0]])
                 if is_car[0] == 0:
@@ -92,19 +102,19 @@ class CarsDisplayer:
                 pass
 
         def edit_acc():
+            """Turns to Customer Edit Account."""
             self.car_app.destroy()
             self.car_app = tk.Tk()
             customerEditAccount.CustomerEditAcc(self.car_app)
             self.car_app.mainloop()
 
         def i_exit_fun():
+            """Finishes program."""
             i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
                                                  "Do you want to exit?")
             if i_exit > 0:
                 car_app.destroy()
                 return
-
-        # Create window
 
         # frames
         main_frame = tk.Frame(self.car_app)
@@ -122,7 +132,6 @@ class CarsDisplayer:
                                pady=10, relief=tk.RIDGE, bg=shared.BG_COLOR)
         table_frame.pack(side=tk.TOP)
 
-        # part
         brand_text = tk.StringVar()
         brand_label = tk.Label(data_frame, text='Brand Name', font=FONT_SIZE, pady=20,
                                bg=shared.BG_COLOR)
@@ -159,7 +168,7 @@ class CarsDisplayer:
         price_entry = tk.Entry(data_frame, textvariable=price_text, font=FONT_SIZE,
                                bg=shared.LISTBOX_COLOR)
         price_entry.grid(row=2, column=1)
-        # -----LISTBOX------------------
+        # creating table
         cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE (PLN)')
         col_size = [(25, 25), (100, 100), (100, 100), (90, 90), (50, 50), (80, 80)]
         table = tkinter.ttk.Treeview(table_frame, columns=cols, show='headings', height=10)

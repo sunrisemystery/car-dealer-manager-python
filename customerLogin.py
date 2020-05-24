@@ -1,3 +1,4 @@
+"""Defines class responsible for log in to the application. """
 import tkinter as tk
 import tkinter.messagebox
 import customers_db
@@ -13,7 +14,11 @@ BG_BUTTON = 'HotPink3'
 
 
 class CustomerLogin:
+    """This class displays Customer Login Panel and contains
+        functionality for buttons."""
+
     def __init__(self, cust_app):
+        """Inits CustomerLogin."""
         self.cust_app = cust_app
         self.cust_app.geometry(GEOMETRY_SIZE)
         self.cust_app.configure(bg=shared.BG_COLOR)
@@ -21,13 +26,14 @@ class CustomerLogin:
 
         db = customers_db.CustomersDatabase(DATABASE)
 
-        # creating functions
         def clear_text():
+            """Clears all entries."""
 
             email_entry.delete(0, tk.END)
             access_key_entry.delete(0, tk.END)
 
         def add_cust():
+            """Checks if all fields are filled."""
             if email_text.get() == '' or access_key_text.get() == '':
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
@@ -35,6 +41,7 @@ class CustomerLogin:
             search_cust()
 
         def search_cust():
+            """Checks if user is an admin or a customer and redirects user to specific window. """
 
             row = db.search_user(email_text.get(), access_key_text.get())
             if not row:
@@ -61,6 +68,7 @@ class CustomerLogin:
                     self.cust_app.mainloop()
 
         def back():
+            """Turns back to login/registration panel."""
             self.cust_app.destroy()
             self.cust_app = tk.Tk()
             mainTest2.MainTest(self.cust_app)
@@ -68,12 +76,11 @@ class CustomerLogin:
             self.cust_app.mainloop()
 
         def i_exit_fun():
+            """Finishes program."""
             i_exit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
             if i_exit > 0:
                 cust_app.destroy()
                 return
-
-        # Create window
 
         # frames
         main_frame = tk.Frame(self.cust_app)
@@ -86,8 +93,6 @@ class CustomerLogin:
         button_frame = tk.Frame(main_frame, width=420, height=40, bd=1, padx=22,
                                 bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
-
-        # part
 
         email_text = tk.StringVar()
         email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, pady=10, padx=10,

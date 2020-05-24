@@ -1,3 +1,4 @@
+"""Defines class responsible for registration to the app. """
 import tkinter as tk
 import tkinter.messagebox
 import customers_db
@@ -12,7 +13,11 @@ BG_BUTTON = 'HotPink3'
 
 
 class CustomerRegister:
+    """This class displays Customer Registration Panel and contains
+        functionality for buttons."""
+
     def __init__(self, cust_app):
+        """Inits CustomerRegister."""
         self.cust_app = cust_app
         self.cust_app.geometry(GEOMETRY_SIZE)
         self.cust_app.configure(bg=shared.BG_COLOR)
@@ -20,8 +25,8 @@ class CustomerRegister:
 
         db = customers_db.CustomersDatabase(DATABASE)
 
-        # creating functions
         def clear_text():
+            """Clears all entries."""
             name_entry.delete(0, tk.END)
             lastname_entry.delete(0, tk.END)
             email_entry.delete(0, tk.END)
@@ -29,6 +34,7 @@ class CustomerRegister:
             phone_entry.delete(0, tk.END)
 
         def add_cust():
+            """Adds customer and checks if given data are correct. """
             for field in TEXT_FIELDS:
                 if field.get() == '':
                     tkinter.messagebox.showerror("Required Fields", "Please include all fields")
@@ -71,6 +77,7 @@ class CustomerRegister:
                 self.cust_app.mainloop()
 
         def search_cust():
+            """Checks if user with given email exists in database."""
 
             for row in db.search_email(email_text.get()):
                 if row:
@@ -78,6 +85,7 @@ class CustomerRegister:
                     return -1
 
         def back():
+            """Turns back to login/registration panel."""
             self.cust_app.destroy()
             self.cust_app = tk.Tk()
             mainTest2.MainTest(self.cust_app)
@@ -85,12 +93,11 @@ class CustomerRegister:
             self.cust_app.mainloop()
 
         def i_exit_fun():
+            """Finishes program."""
             i_exit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
             if i_exit > 0:
                 cust_app.destroy()
                 return
-
-        # Create window
 
         # frames
         main_frame = tk.Frame(self.cust_app)
@@ -104,7 +111,7 @@ class CustomerRegister:
                                 bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
 
-        # part
+        # entries
         name_text = tk.StringVar()
         name_label = tk.Label(data_frame, text='Name', font=FONT_SIZE, pady=20, bg=shared.BG_COLOR)
         name_label.grid(row=0, column=0, sticky=tk.E)

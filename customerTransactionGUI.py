@@ -1,3 +1,4 @@
+"""Defines a class responsible for Transactions' Window for Admin."""
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
@@ -12,7 +13,11 @@ BG_BUTTON = 'HotPink3'
 
 
 class TransactionCustomerDisplayer:
+    """This class displays Transactions' Window for Customer and contains
+        functionality for buttons."""
+
     def __init__(self, car_app):
+        """Inits TransactionCustomerDisplayer."""
         self.car_app = car_app
         self.car_app.geometry(GEOMETRY_SIZE)
         car_app.configure(bg=shared.BG_COLOR)
@@ -22,6 +27,7 @@ class TransactionCustomerDisplayer:
         trans_db = transactions_db.TransactionsDatabase(DATABASE)
 
         def select_item(event):
+            """Stores an index of selected item."""
             global selected_item
             try:
                 if table.selection() != ():
@@ -30,12 +36,14 @@ class TransactionCustomerDisplayer:
                 pass
 
         def my_trans():
+            """Displays customer's transactions."""
             for i in table.get_children():
                 table.delete(i)
-            for record in trans_db.search_transactions(shared.logged_id):
-                table.insert('', tk.END, values=record)
+            for row in trans_db.search_transactions(shared.logged_id):
+                table.insert('', tk.END, values=row)
 
         def i_exit_fun():
+            """Finishes program."""
             i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
                                                  "Do you want to exit?")
             if i_exit > 0:
@@ -43,12 +51,11 @@ class TransactionCustomerDisplayer:
                 return
 
         def back():
+            """Turns back to Available Car List Panel."""
             self.car_app.destroy()
             self.car_app = tk.Tk()
             carsDisplayer.CarsDisplayer(self.car_app)
             self.car_app.mainloop()
-
-        # Create window
 
         # frames
         main_frame = tk.Frame(self.car_app)
@@ -58,13 +65,12 @@ class TransactionCustomerDisplayer:
         button_frame = tk.Frame(main_frame, width=620, height=40, bd=1, relief=tk.RIDGE,
                                 bg=shared.BG_COLOR)
         button_frame.pack(side=tk.TOP)
-        #
+
         table_frame = tk.Frame(main_frame, bd=0, width=735, height=310,
                                padx=80, pady=10, relief=tk.RIDGE, bg=shared.BG_COLOR)
         table_frame.pack(side=tk.TOP)
-        #
 
-        # -----LISTBOX------------------
+        # creating table
         cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
         col_size = [(25, 25), (50, 50), (100, 100), (50, 50), (50, 50),
                     (50, 50), (111, 111)]
@@ -87,7 +93,6 @@ class TransactionCustomerDisplayer:
         back_btn = tk.Button(button_frame, text='< Back', width=12, command=back,
                              bg=shared.BG_COLOR)
         back_btn.grid(column=1, row=0, sticky=tk.W)
-        #
 
         exit_btn = tk.Button(button_frame, text='Exit', width=12,
                              command=i_exit_fun, bg=BG_BUTTON)

@@ -26,9 +26,8 @@ class Cars:
 
         db = cars_db.CarsDatabase(DATABASE)
 
-        # creating functions
         def clear_text():
-            """Clear all entries."""
+            """Clears all entries."""
             brand_entry.delete(0, tk.END)
             model_entry.delete(0, tk.END)
             color_entry.delete(0, tk.END)
@@ -154,7 +153,6 @@ class Cars:
 
         def all_trans():
             """Turns to Transactions Panel."""
-            # cars_list.select_clear(tk.END)
 
             self.car_app.destroy()
             self.car_app = tk.Tk()
@@ -216,6 +214,7 @@ class Cars:
         price_entry = tk.Entry(data_frame, textvariable=price_text, font=FONT_SIZE,
                                bg=shared.LISTBOX_COLOR)
         price_entry.grid(row=2, column=1)
+        # creating table
 
         cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'AVAILABLE (0/1)', 'PRICE (PLN)')
         col_size = [(25, 25), (100, 100), (100, 100), (90, 90), (50, 50), (100, 100), (80, 80)]

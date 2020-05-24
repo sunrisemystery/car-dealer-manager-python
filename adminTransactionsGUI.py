@@ -39,12 +39,11 @@ class TransactionDisplayer:
                 pass
 
         def my_trans():
+            """Displays all transactions that are in database."""
             for i in table.get_children():
                 table.delete(i)
             for row in trans_db.all_transactions():
-                table.insert('', tk.END,
-                             values=[row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7],
-                                     row[8]])
+                table.insert('', tk.END, values=row)
 
         def remove_transaction():
             """Removes selected transaction."""
@@ -87,7 +86,7 @@ class TransactionDisplayer:
                                height=310, padx=80, pady=10, relief=tk.RIDGE, bg=shared.BG_COLOR)
         table_frame.pack(side=tk.TOP)
 
-        # ---------TEST----
+        # creating table
 
         cols = ('ID', 'NAME', 'SURNAME', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
         col_size = [(25, 25), (100, 100), (100, 100), (50, 50), (100, 100), (50, 50), (50, 50),
