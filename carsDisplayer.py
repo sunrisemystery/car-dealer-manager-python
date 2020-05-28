@@ -60,7 +60,7 @@ class CarsDisplayer(cars.CarsBase):
         for i in self.table.get_children():
             self.table.delete(i)
 
-        for row in self.data_base.search(*[f.get() for f in self.db_fields]):
+        for row in self.data_base.search_available(*[f.get() for f in self.db_fields]):
             self.table.insert('', tk.END, values=[row[0], row[1], row[2], row[3], row[4], row[6]])
 
     def my_transactions(self):

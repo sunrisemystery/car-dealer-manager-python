@@ -66,3 +66,11 @@ class CarsDatabase:
             " model=? OR color=? OR year=? OR price=?",
             (brand.capitalize(), model.capitalize(), color.capitalize(), year, price))
         return self.c_cursor.fetchall()
+
+    def search_available(self, year, price, brand='', model='', color=''):
+        """Returns cars that meet the criteria."""
+        self.c_cursor.execute(
+            "SELECT car_id, brand, model, color, year, instock, price FROM cars WHERE (brand=? OR"
+            " model=? OR color=? OR year=? OR price=?) AND (instock=1)",
+            (brand.capitalize(), model.capitalize(), color.capitalize(), year, price))
+        return self.c_cursor.fetchall()
