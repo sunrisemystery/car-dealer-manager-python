@@ -78,10 +78,9 @@ class TransactionCustomerDisplayer(adminTransactionsGUI.TransactionBase):
         # buttons
 
         back_button = tk.Button(button_frame, text='< Back', width=12, command=self.back,
-                             bg=shared.BG_COLOR)
+                                bg=shared.BG_COLOR)
         back_button.grid(column=1, row=0, sticky=tk.W)
 
         exit_button = tk.Button(button_frame, text='Exit', width=12,
                                 command=self.exit_fun, bg=shared.BG_BUTTON)
         exit_button.grid(column=2, row=0, sticky=tk.W)
-

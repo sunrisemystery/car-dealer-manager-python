@@ -27,12 +27,12 @@ class CustomerEditAccount:
         self.email_text = tk.StringVar(value=self.customer_data[3])
         self.access_key_text = tk.StringVar(value=self.customer_data[4])
         self.phone_text = tk.StringVar(value=self.customer_data[6])
-        self.TEXT_FIELDS = [self.name_text, self.lastname_text, self.email_text,
+        self.text_fields = [self.name_text, self.lastname_text, self.email_text,
                             self.access_key_text, self.phone_text]
 
     def update_customer(self):
         """Updates customer's data."""
-        for field in self.TEXT_FIELDS:
+        for field in self.text_fields:
             if not field.get():
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return

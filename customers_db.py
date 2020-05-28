@@ -25,8 +25,7 @@ class CustomersDatabase:
         self.c_cursor.execute(
             "SELECT customer_id, name, lastname, email, access_key, permission, phone "
             "FROM customers")
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def insert(self, name, lastname, email, access_key, phone):
         """Inserts customer to a database."""
@@ -54,16 +53,14 @@ class CustomersDatabase:
             " FROM customers WHERE name=? OR lastname=? OR email=?"
             " OR access_key=? OR phone=? AND permission=1",
             (name.capitalize(), lastname.capitalize(), email, access_key, phone))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def search_email(self, email=''):
         """Returns customers with given email."""
         self.c_cursor.execute(
             "SELECT customer_id, name, lastname, email, access_key, permission, phone"
             " FROM customers WHERE email=?", (email,))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def search_user(self, email='', access_key=''):
         """Returns customers with given email and access key."""
@@ -71,8 +68,7 @@ class CustomersDatabase:
             "SELECT customer_id, name, lastname, email, access_key, permission, phone "
             "FROM customers WHERE email=? AND"
             " access_key=?", (email, access_key))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def is_admin(self, email='', access_key=''):
         """Returns users that meet given criteria."""
@@ -80,8 +76,7 @@ class CustomersDatabase:
             "SELECT customer_id, name, lastname, email, access_key, permission, phone "
             "FROM customers WHERE email=? AND"
             " access_key=? AND permission=0", (email, access_key))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def get_id(self, email='', access_key=''):
         """Returns id of logged customer."""
@@ -95,5 +90,4 @@ class CustomersDatabase:
         self.c_cursor.execute(
             "SELECT customer_id, name, lastname, email, access_key, permission, phone "
             "FROM customers WHERE customer_id=?", (id_customer,))
-        row = self.c_cursor.fetchone()
-        return row
+        return self.c_cursor.fetchone()

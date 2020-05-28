@@ -34,9 +34,9 @@ class CarsBase:
         self.year_text = tk.StringVar()
         self.price_text = tk.StringVar()
 
-        self.TEXT_FIELDS = [self.brand_text, self.model_text, self.color_text, self.year_text,
+        self.text_fields = [self.brand_text, self.model_text, self.color_text, self.year_text,
                             self.price_text]
-        self.DB_FIELDS = [self.year_text, self.price_text, self.brand_text, self.model_text,
+        self.db_fields = [self.year_text, self.price_text, self.brand_text, self.model_text,
                           self.color_text]
 
     def clear_text(self):
@@ -76,7 +76,7 @@ class Cars(CarsBase):
 
     def add_car(self):
         """Adds a car to database."""
-        for field in self.TEXT_FIELDS:
+        for field in self.text_fields:
             if not field.get():
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
@@ -96,7 +96,7 @@ class Cars(CarsBase):
             tkinter.messagebox.showerror("Price can't be a text", "Please write a real number")
             return
 
-        self.data_b.insert(*[f.get().capitalize() for f in self.TEXT_FIELDS])
+        self.data_b.insert(*[f.get().capitalize() for f in self.text_fields])
 
         # clear list
         for i in self.table.get_children():
@@ -140,12 +140,12 @@ class Cars(CarsBase):
         for i in self.table.get_children():
             self.table.delete(i)
 
-        for row in self.data_b.search(*[f.get() for f in self.DB_FIELDS]):
+        for row in self.data_b.search(*[f.get() for f in self.db_fields]):
             self.table.insert('', tk.END, values=row)
 
     def update_car(self):
         """Updates car's data."""
-        for field in self.TEXT_FIELDS:
+        for field in self.text_fields:
             if not field.get():
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
@@ -166,7 +166,7 @@ class Cars(CarsBase):
             return
         try:
             self.data_b.update(self.selected_item[COLS[0]],
-                               *[f.get().capitalize() for f in self.TEXT_FIELDS])
+                               *[f.get().capitalize() for f in self.text_fields])
             self.populate_list()
         except TypeError:
             pass

@@ -36,8 +36,7 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
         INNER JOIN cars 
         ON transactions.car_id=cars.car_id 
         WHERE transactions.customer_id=? ''', (customer_id,))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def all_transactions(self):
         """Returns all transactions."""
@@ -50,8 +49,7 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
                 INNER JOIN customers
                 ON transactions.customer_id=customers.customer_id 
                 ''')
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def remove_transaction(self, id_transaction):
         """Deletes transaction from a database."""

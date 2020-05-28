@@ -23,15 +23,13 @@ class CarsDatabase:
     def fetch(self):
         """Displays all cars in database."""
         self.c_cursor.execute("SELECT car_id, brand, model, color, year, instock, price FROM cars")
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def fetch_available(self):
         """Displays all cars that are not booked by anybody."""
         self.c_cursor.execute(
             "SELECT car_id, brand, model, color, year, instock, price FROM cars WHERE instock=1")
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()
 
     def insert(self, brand, model, color, year, price):
         """Inserts car to a database."""
@@ -59,8 +57,7 @@ class CarsDatabase:
     def isout(self, id_car):
         """Returns the column 'instock' of chosen car."""
         self.c_cursor.execute("SELECT instock FROM cars WHERE car_id=?", (id_car,))
-        row = self.c_cursor.fetchone()
-        return row
+        return self.c_cursor.fetchone()
 
     def search(self, year, price, brand='', model='', color=''):
         """Returns cars that meet the criteria."""
@@ -68,5 +65,4 @@ class CarsDatabase:
             "SELECT car_id, brand, model, color, year, instock, price FROM cars WHERE brand=? OR"
             " model=? OR color=? OR year=? OR price=?",
             (brand.capitalize(), model.capitalize(), color.capitalize(), year, price))
-        rows = self.c_cursor.fetchall()
-        return rows
+        return self.c_cursor.fetchall()

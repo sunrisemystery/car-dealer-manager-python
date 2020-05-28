@@ -31,7 +31,7 @@ class CustomerRegister(customerLogin.CustomerBase):
         self.access_key_text = tk.StringVar()
         self.phone_text = tk.StringVar()
 
-        self.TEXT_FIELDS = [self.name_text, self.lastname_text, self.email_text,
+        self.text_fields = [self.name_text, self.lastname_text, self.email_text,
                             self.access_key_text, self.phone_text]
 
         self.d_base = customers_db.CustomersDatabase(shared.DATABASE)
@@ -46,7 +46,7 @@ class CustomerRegister(customerLogin.CustomerBase):
 
     def add_customer(self):
         """Adds customer and checks if given data are correct. """
-        for field in self.TEXT_FIELDS:
+        for field in self.text_fields:
             if not field.get():
                 tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
