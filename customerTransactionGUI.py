@@ -5,57 +5,47 @@ import tkinter.ttk
 import cars_db
 import transactions_db
 import carsDisplayer
+import adminTransactionsGUI
 import shared
 
 GEOMETRY_SIZE = '620x400'
-DATABASE = 'mydatavase.db'
-BG_BUTTON = 'HotPink3'
+COLS = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
+COL_SIZE = [(25, 25), (50, 50), (100, 100), (50, 50), (50, 50),
+            (50, 50), (111, 111)]
 
 
-class TransactionCustomerDisplayer:
+class TransactionCustomerDisplayer(adminTransactionsGUI.TransactionBase):
     """This class displays Transactions' Window for Customer and contains
         functionality for buttons."""
 
     def __init__(self, car_app):
         """Inits TransactionCustomerDisplayer."""
-        self.car_app = car_app
+        adminTransactionsGUI.TransactionBase.__init__(self, car_app)
         self.car_app.geometry(GEOMETRY_SIZE)
-        car_app.configure(bg=shared.BG_COLOR)
+        self.car_app.configure(bg=shared.BG_COLOR)
         self.car_app.title('Transaction Viewer')
 
         cars_db.CarsDatabase('mydatavase.db')
-        trans_db = transactions_db.TransactionsDatabase(DATABASE)
+        self.trans_db = transactions_db.TransactionsDatabase(shared.DATABASE)
 
-        def select_item(event):
-            """Stores an index of selected item."""
-            global selected_item
-            try:
-                if table.selection() != ():
-                    selected_item = table.set(table.selection())
-            except:
-                pass
+    def my_transactions(self):
+        """Displays customer's transactions."""
+        for i in self.table.get_children():
+            self.table.delete(i)
+        for row in self.trans_db.search_transactions(shared.LOGGED_ID):
+            self.table.insert('', tk.END, values=row)
 
-        def my_trans():
-            """Displays customer's transactions."""
-            for i in table.get_children():
-                table.delete(i)
-            for row in trans_db.search_transactions(shared.logged_id):
-                table.insert('', tk.END, values=row)
+    def back(self):
+        """Turns back to Available Car List Panel."""
+        self.car_app.destroy()
+        self.car_app = tk.Tk()
+        car_display_window = carsDisplayer.CarsDisplayer(self.car_app)
+        car_display_window.init_window()
+        car_display_window.populate_list()
+        self.car_app.mainloop()
 
-        def i_exit_fun():
-            """Finishes program."""
-            i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
-                                                 "Do you want to exit?")
-            if i_exit > 0:
-                car_app.destroy()
-                return
-
-        def back():
-            """Turns back to Available Car List Panel."""
-            self.car_app.destroy()
-            self.car_app = tk.Tk()
-            carsDisplayer.CarsDisplayer(self.car_app)
-            self.car_app.mainloop()
+    def init_window(self):
+        """Inits window and labels."""
 
         # frames
         main_frame = tk.Frame(self.car_app)
@@ -71,32 +61,27 @@ class TransactionCustomerDisplayer:
         table_frame.pack(side=tk.TOP)
 
         # creating table
-        cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
-        col_size = [(25, 25), (50, 50), (100, 100), (50, 50), (50, 50),
-                    (50, 50), (111, 111)]
-        table = tkinter.ttk.Treeview(table_frame, columns=cols, show='headings', height=10)
-        table.grid()
+        self.table = tkinter.ttk.Treeview(table_frame, columns=COLS, show='headings', height=10)
+        self.table.grid()
 
-        for x, y in zip(cols, col_size):
-            table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
-            table.heading(x, text=x)
+        for x, y in zip(COLS, COL_SIZE):
+            self.table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
+            self.table.heading(x, text=x)
 
         scroll_y = tk.Scrollbar(table_frame, orient=tk.VERTICAL)
-        scroll_y.configure(command=table.yview())
+        scroll_y.configure(command=self.table.yview())
         scroll_y.grid(row=0, column=3, sticky='ns')
 
-        table.configure(yscrollcommand=scroll_y.set)
-        table.bind('<ButtonRelease-1>', select_item)
+        self.table.configure(yscrollcommand=scroll_y.set)
+        self.table.bind('<ButtonRelease-1>', self.select_item)
 
         # buttons
 
-        back_btn = tk.Button(button_frame, text='< Back', width=12, command=back,
+        back_button = tk.Button(button_frame, text='< Back', width=12, command=self.back,
                              bg=shared.BG_COLOR)
-        back_btn.grid(column=1, row=0, sticky=tk.W)
+        back_button.grid(column=1, row=0, sticky=tk.W)
 
-        exit_btn = tk.Button(button_frame, text='Exit', width=12,
-                             command=i_exit_fun, bg=BG_BUTTON)
-        exit_btn.grid(column=2, row=0, sticky=tk.W)
-        # commands
+        exit_button = tk.Button(button_frame, text='Exit', width=12,
+                                command=self.exit_fun, bg=shared.BG_BUTTON)
+        exit_button.grid(column=2, row=0, sticky=tk.W)
 
-        my_trans()

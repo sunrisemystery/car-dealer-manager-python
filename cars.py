@@ -3,162 +3,186 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
-import cars_db
 import adminTransactionsGUI
+import cars_db
 import shared
 
 GEOMETRY_SIZE = '750x450'
-DATABASE = 'mydatavase.db'
-FONT_SIZE = ('calibri', 12)
-BG_BUTTON = 'HotPink3'
+COLS = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'AVAILABLE (0/1)', 'PRICE (PLN)')
+COL_SIZE = [(25, 25), (100, 100), (100, 100), (90, 90), (50, 50), (100, 100), (80, 80)]
 
 
-class Cars:
-    """This class displays Car Manager Window for Admin and contains
-        functionality for buttons."""
+class CarsBase:
+    """Base class for displaying cars."""
 
     def __init__(self, car_app):
         """Inits Cars."""
         self.car_app = car_app
+        self.data_b = cars_db.CarsDatabase(shared.DATABASE)
+        self.selected_item = None
+        self.brand_entry = None
+        self.model_entry = None
+        self.color_entry = None
+        self.year_entry = None
+        self.price_entry = None
+
+        self.table = None
+
+        self.brand_text = tk.StringVar()
+        self.model_text = tk.StringVar()
+        self.color_text = tk.StringVar()
+        self.year_text = tk.StringVar()
+        self.price_text = tk.StringVar()
+
+        self.TEXT_FIELDS = [self.brand_text, self.model_text, self.color_text, self.year_text,
+                            self.price_text]
+        self.DB_FIELDS = [self.year_text, self.price_text, self.brand_text, self.model_text,
+                          self.color_text]
+
+    def clear_text(self):
+        """Clears all entries."""
+        self.brand_entry.delete(0, tk.END)
+        self.model_entry.delete(0, tk.END)
+        self.color_entry.delete(0, tk.END)
+        self.year_entry.delete(0, tk.END)
+        self.price_entry.delete(0, tk.END)
+
+    def exit_fun(self):
+        """Finishes program."""
+        i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
+                                             "Do you want to exit?")
+        if i_exit > 0:
+            self.car_app.destroy()
+            return
+
+
+class Cars(CarsBase):
+    """This class displays Car Manager Window for Admin."""
+
+    def __init__(self, car_app):
+        """Inits Cars."""
+        super().__init__(car_app)
         self.car_app.geometry(GEOMETRY_SIZE)
         self.car_app.title('Car Manager')
         self.car_app.configure(bg=shared.BG_COLOR)
+        self.data_b = cars_db.CarsDatabase(shared.DATABASE)
 
-        db = cars_db.CarsDatabase(DATABASE)
+    def populate_list(self):
+        """Displays all cars which are in database."""
+        for i in self.table.get_children():
+            self.table.delete(i)
+        for row in self.data_b.fetch():
+            self.table.insert('', tk.END, values=row)
 
-        def clear_text():
-            """Clears all entries."""
-            brand_entry.delete(0, tk.END)
-            model_entry.delete(0, tk.END)
-            color_entry.delete(0, tk.END)
-            year_entry.delete(0, tk.END)
-            price_entry.delete(0, tk.END)
-
-        def populate_list():
-            """Displays all cars which are in database."""
-            for i in table.get_children():
-                table.delete(i)
-            for row in db.fetch():
-                table.insert('', tk.END,
-                             values=[row[0], row[1], row[2], row[3], row[4], row[5],
-                                     row[6]])
-
-        def add_car():
-            """Adds a car to database."""
-            for field in TEXT_FIELDS:
-                if field.get() == '':
-                    tkinter.messagebox.showerror("Required Fields", "Please include all fields")
-                    return
-            try:
-                if not isinstance(int(year_text.get()), int):
-                    tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
-                    return
-            except:
+    def add_car(self):
+        """Adds a car to database."""
+        for field in self.TEXT_FIELDS:
+            if not field.get():
+                tkinter.messagebox.showerror("Required Fields", "Please include all fields")
+                return
+        try:
+            if not isinstance(int(self.year_text.get()), int):
                 tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
                 return
+        except ValueError:
+            tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
+            return
 
-            try:
-                if not isinstance(float(price_text.get()), float):
-                    tkinter.messagebox.showerror("Price can't be a text", "Please write an integer")
-                    return
-            except:
-                tkinter.messagebox.showerror("Price can't be a text", "Please write an integer")
+        try:
+            if not isinstance(float(self.price_text.get()), float):
+                tkinter.messagebox.showerror("Price can't be a text", "Please write a real number")
                 return
+        except ValueError:
+            tkinter.messagebox.showerror("Price can't be a text", "Please write a real number")
+            return
 
-            db.insert(*[f.get().capitalize() for f in TEXT_FIELDS])
+        self.data_b.insert(*[f.get().capitalize() for f in self.TEXT_FIELDS])
 
-            # clear list
-            for i in table.get_children():
-                table.delete(i)
+        # clear list
+        for i in self.table.get_children():
+            self.table.delete(i)
 
-            populate_list()
-            clear_text()
+        self.populate_list()
+        self.clear_text()
 
-        def select_item_fun(event):
-            """Fills fields with selected car's data."""
-            global selected_item
-            if table.selection() != ():
-                selected_item = table.set(table.selection())
+    def select_item_fun(self, event):
+        """Fills fields with selected car's data."""
 
-                brand_entry.delete(0, tk.END)
-                brand_entry.insert(tk.END, selected_item[cols[1]])
+        if self.table.selection():
+            self.selected_item = self.table.set(self.table.selection())
 
-                model_entry.delete(0, tk.END)
-                model_entry.insert(tk.END, selected_item[cols[2]])
+            self.brand_entry.delete(0, tk.END)
+            self.brand_entry.insert(tk.END, self.selected_item[COLS[1]])
 
-                color_entry.delete(0, tk.END)
-                color_entry.insert(tk.END, selected_item[cols[3]])
+            self.model_entry.delete(0, tk.END)
+            self.model_entry.insert(tk.END, self.selected_item[COLS[2]])
 
-                year_entry.delete(0, tk.END)
-                year_entry.insert(tk.END, selected_item[cols[4]])
+            self.color_entry.delete(0, tk.END)
+            self.color_entry.insert(tk.END, self.selected_item[COLS[3]])
 
-                price_entry.delete(0, tk.END)
-                price_entry.insert(tk.END, selected_item[cols[5]])
+            self.year_entry.delete(0, tk.END)
+            self.year_entry.insert(tk.END, self.selected_item[COLS[4]])
 
-        def remove_car():
-            """Removes car from database and updates listbox."""
-            if not table.selection() != ():
+            self.price_entry.delete(0, tk.END)
+            self.price_entry.insert(tk.END, self.selected_item[COLS[6]])
+
+    def remove_car(self):
+        """Removes car from database and updates listbox."""
+        if not self.table.selection():
+            return
+
+        self.data_b.remove(self.selected_item[COLS[0]])
+        self.clear_text()
+        self.populate_list()
+
+    def search_car(self):
+        """Displays cars that met given criteria. """
+        for i in self.table.get_children():
+            self.table.delete(i)
+
+        for row in self.data_b.search(*[f.get() for f in self.DB_FIELDS]):
+            self.table.insert('', tk.END, values=row)
+
+    def update_car(self):
+        """Updates car's data."""
+        for field in self.TEXT_FIELDS:
+            if not field.get():
+                tkinter.messagebox.showerror("Required Fields", "Please include all fields")
                 return
-            try:
-                db.remove(selected_item[cols[0]])
-                clear_text()
-                populate_list()
-            except:
-                pass
-
-        def search_car():
-            """Displays cars that met given criteria. """
-            for i in table.get_children():
-                table.delete(i)
-
-            for row in db.search(*[f.get() for f in DB_FIELDS]):
-                table.insert('', tk.END,
-                             values=[row[0], row[1], row[2], row[3], row[4], row[5],
-                                     row[6]])
-
-        def update_car():
-            """Updates car's data."""
-            for field in TEXT_FIELDS:
-                if field.get() == '':
-                    tkinter.messagebox.showerror("Required Fields", "Please include all fields")
-                    return
-            try:
-                if not isinstance(int(year_text.get()), int):
-                    tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
-                    return
-            except:
+        try:
+            if not isinstance(int(self.year_text.get()), int):
                 tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
                 return
+        except ValueError:
+            tkinter.messagebox.showerror("Year can't be a text", "Please write an integer")
+            return
 
-            try:
-                if not isinstance(float(price_text.get()), float):
-                    tkinter.messagebox.showerror("Price can't be a text", "Please write an integer")
-                    return
-            except:
-                tkinter.messagebox.showerror("Price can't be a text", "Please write an integer")
+        try:
+            if not isinstance(float(self.price_text.get()), float):
+                tkinter.messagebox.showerror("Price can't be a text", "Please write a real number")
                 return
-            try:
-                db.update(selected_item[cols[0]], *[f.get().capitalize() for f in TEXT_FIELDS])
-                populate_list()
-            except:
-                pass
+        except ValueError:
+            tkinter.messagebox.showerror("Price can't be a text", "Please write a real number")
+            return
+        try:
+            self.data_b.update(self.selected_item[COLS[0]],
+                               *[f.get().capitalize() for f in self.TEXT_FIELDS])
+            self.populate_list()
+        except TypeError:
+            pass
 
-        def i_exit_fun():
-            """Finishes program."""
-            i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
-                                                 "Do you want to exit?")
-            if i_exit > 0:
-                car_app.destroy()
-                return
+    def all_transactions(self):
+        """Turns to Transactions Panel."""
 
-        def all_trans():
-            """Turns to Transactions Panel."""
+        self.car_app.destroy()
+        self.car_app = tk.Tk()
+        all_transactions_window = adminTransactionsGUI.TransactionDisplayer(self.car_app)
+        all_transactions_window.init_window()
+        all_transactions_window.transactions()
+        self.car_app.mainloop()
 
-            self.car_app.destroy()
-            self.car_app = tk.Tk()
-            adminTransactionsGUI.TransactionDisplayer(self.car_app)
-            self.car_app.mainloop()
-
+    def init_window(self):
+        """Initializes window and buttons."""
         # Creating window
 
         # frames
@@ -178,98 +202,90 @@ class Cars:
         table_frame.pack(side=tk.TOP)
 
         # entries
-        brand_text = tk.StringVar()
-        brand_label = tk.Label(data_frame, text='Brand Name', font=FONT_SIZE, pady=20,
+
+        brand_label = tk.Label(data_frame, text='Brand Name', font=shared.FONT_SIZE, pady=20,
                                bg=shared.BG_COLOR)
         brand_label.grid(row=0, column=0, sticky=tk.E)
-        brand_entry = tk.Entry(data_frame, textvariable=brand_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        brand_entry.grid(row=0, column=1)
+        self.brand_entry = tk.Entry(data_frame, textvariable=self.brand_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.brand_entry.grid(row=0, column=1)
 
-        model_text = tk.StringVar()
-        model_label = tk.Label(data_frame, text='Model Name', font=FONT_SIZE, bg=shared.BG_COLOR)
+        model_label = tk.Label(data_frame, text='Model Name', font=shared.FONT_SIZE,
+                               bg=shared.BG_COLOR)
         model_label.grid(row=0, column=2, sticky=tk.E, padx=(30, 0))
-        model_entry = tk.Entry(data_frame, textvariable=model_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        model_entry.grid(row=0, column=3)
+        self.model_entry = tk.Entry(data_frame, textvariable=self.model_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.model_entry.grid(row=0, column=3)
 
-        color_text = tk.StringVar()
-        color_label = tk.Label(data_frame, text='Car Color', font=FONT_SIZE, bg=shared.BG_COLOR)
+        color_label = tk.Label(data_frame, text='Car Color', font=shared.FONT_SIZE,
+                               bg=shared.BG_COLOR)
         color_label.grid(row=1, column=0, sticky=tk.E)
-        color_entry = tk.Entry(data_frame, textvariable=color_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        color_entry.grid(row=1, column=1)
+        self.color_entry = tk.Entry(data_frame, textvariable=self.color_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.color_entry.grid(row=1, column=1)
 
-        year_text = tk.StringVar()
-        year_label = tk.Label(data_frame, text='Car Year ', font=FONT_SIZE, bg=shared.BG_COLOR)
+        year_label = tk.Label(data_frame, text='Car Year ', font=shared.FONT_SIZE,
+                              bg=shared.BG_COLOR)
         year_label.grid(row=1, column=2, sticky=tk.E)
-        year_entry = tk.Entry(data_frame, textvariable=year_text, font=FONT_SIZE,
-                              bg=shared.LISTBOX_COLOR)
-        year_entry.grid(row=1, column=3)
+        self.year_entry = tk.Entry(data_frame, textvariable=self.year_text, font=shared.FONT_SIZE,
+                                   bg=shared.LISTBOX_COLOR)
+        self.year_entry.grid(row=1, column=3)
 
-        price_text = tk.StringVar()
-        price_label = tk.Label(data_frame, text='Car Price', font=FONT_SIZE, pady=20,
+        price_label = tk.Label(data_frame, text='Car Price', font=shared.FONT_SIZE, pady=20,
                                bg=shared.BG_COLOR)
         price_label.grid(row=2, column=0, sticky=tk.E)
-        price_entry = tk.Entry(data_frame, textvariable=price_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        price_entry.grid(row=2, column=1)
+        self.price_entry = tk.Entry(data_frame, textvariable=self.price_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.price_entry.grid(row=2, column=1)
         # creating table
 
-        cols = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'AVAILABLE (0/1)', 'PRICE (PLN)')
-        col_size = [(25, 25), (100, 100), (100, 100), (90, 90), (50, 50), (100, 100), (80, 80)]
-        table = tkinter.ttk.Treeview(table_frame, columns=cols, show='headings', height=10)
+        self.table = tkinter.ttk.Treeview(table_frame, columns=COLS, show='headings', height=10)
 
-        table.grid()
+        self.table.grid()
 
-        for x, y in zip(cols, col_size):
-            table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
-            table.heading(x, text=x)
+        for x, y in zip(COLS, COL_SIZE):
+            self.table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
+            self.table.heading(x, text=x)
 
         scroll_y = tk.Scrollbar(table_frame, orient=tk.VERTICAL)
-        scroll_y.configure(command=table.yview())
+        scroll_y.configure(command=self.table.yview())
         scroll_y.grid(row=0, column=3, sticky='ns')
 
-        table.configure(yscrollcommand=scroll_y.set)
-        table.bind('<ButtonRelease-1>', select_item_fun)
+        self.table.configure(yscrollcommand=scroll_y.set)
+        self.table.bind('<ButtonRelease-1>', self.select_item_fun)
 
         # buttons
 
-        add_btn = tk.Button(button_frame, text='Add Car', width=12, command=add_car,
-                            bg=shared.BG_COLOR)
-        add_btn.grid(column=0, row=0, sticky=tk.W)
-
-        update_btn = tk.Button(button_frame, text='Update', width=12, command=update_car,
+        add_button = tk.Button(button_frame, text='Add Car', width=12, command=self.add_car,
                                bg=shared.BG_COLOR)
-        update_btn.grid(column=1, row=0, sticky=tk.W)
+        add_button.grid(column=0, row=0, sticky=tk.W)
 
-        remove_btn = tk.Button(button_frame, text='Remove', width=12, command=remove_car,
-                               bg=shared.BG_COLOR)
-        remove_btn.grid(column=2, row=0, sticky=tk.W)
+        update_button = tk.Button(button_frame, text='Update', width=12, command=self.update_car,
+                                  bg=shared.BG_COLOR)
+        update_button.grid(column=1, row=0, sticky=tk.W)
 
-        clear_btn = tk.Button(button_frame, text='Clear', width=12, command=clear_text,
-                              bg=shared.BG_COLOR)
-        clear_btn.grid(column=3, row=0, sticky=tk.W)
+        remove_button = tk.Button(button_frame, text='Remove', width=12, command=self.remove_car,
+                                  bg=shared.BG_COLOR)
+        remove_button.grid(column=2, row=0, sticky=tk.W)
 
-        display_btn = tk.Button(button_frame, text='Display', width=12, command=populate_list,
-                                bg=shared.BG_COLOR)
-        display_btn.grid(column=4, row=0, sticky=tk.W)
+        clear_button = tk.Button(button_frame, text='Clear', width=12, command=self.clear_text,
+                                 bg=shared.BG_COLOR)
+        clear_button.grid(column=3, row=0, sticky=tk.W)
 
-        search_btn = tk.Button(button_frame, text='Search', width=12, command=search_car,
-                               bg=shared.BG_COLOR)
-        search_btn.grid(column=5, row=0, sticky=tk.W)
+        display_button = tk.Button(button_frame, text='Display', width=12,
+                                   command=self.populate_list,
+                                   bg=shared.BG_COLOR)
+        display_button.grid(column=4, row=0, sticky=tk.W)
 
-        trans_btn = tk.Button(button_frame, text='All Transactions', width=12, command=all_trans,
-                              bg=shared.BG_COLOR)
-        trans_btn.grid(column=6, row=0, sticky=tk.W)
+        search_button = tk.Button(button_frame, text='Search', width=12, command=self.search_car,
+                                  bg=shared.BG_COLOR)
+        search_button.grid(column=5, row=0, sticky=tk.W)
 
-        exit_btn = tk.Button(button_frame, text='Exit', width=12, command=i_exit_fun,
-                             bg=BG_BUTTON)
-        exit_btn.grid(column=7, row=0, sticky=tk.W)
+        trans_button = tk.Button(button_frame, text='All Transactions', width=12,
+                                 command=self.all_transactions,
+                                 bg=shared.BG_COLOR)
+        trans_button.grid(column=6, row=0, sticky=tk.W)
 
-        TEXT_FIELDS = [brand_text, model_text, color_text, year_text, price_text]
-        DB_FIELDS = [year_text, price_text, brand_text, model_text, color_text]
-
-        # commands
-
-        populate_list()
+        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit_fun,
+                                bg=shared.BG_BUTTON)
+        exit_button.grid(column=7, row=0, sticky=tk.W)

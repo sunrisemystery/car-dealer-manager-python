@@ -3,79 +3,82 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
+import cars
 import cars_db
 import transactions_db
-import cars
 import shared
 
-BG_BUTTON = 'HotPink3'
 GEOMETRY_SIZE = '800x450'
-DATABASE = 'mydatavase.db'
+COLS = ('ID', 'NAME', 'SURNAME', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
+COL_SIZE = [(25, 25), (100, 100), (100, 100), (50, 50), (100, 100), (50, 50), (50, 50),
+            (50, 50), (111, 111)]
 
 
-class TransactionDisplayer:
-    """This class displays Transactions' Window for Admin and contains
-        functionality for buttons."""
+class TransactionBase:
+    """Base class for transactions."""
+
+    def __init__(self, car_app):
+        """Inits TransactionBase."""
+        self.car_app = car_app
+        self.selected_item = None
+        self.table = None
+
+    def select_item(self, event):
+        """Stores an index of selected item."""
+        if self.table.selection():
+            self.selected_item = self.table.set(self.table.selection())
+
+    def exit_fun(self):
+        """Finishes program."""
+        exit_v = tkinter.messagebox.askyesno("Car Dealer Management Database System",
+                                             "Do you want to exit?")
+        if exit_v > 0:
+            self.car_app.destroy()
+            return
+
+
+class TransactionDisplayer(TransactionBase):
+    """This class displays Transactions' Window for Admin."""
 
     def __init__(self, car_app):
         """Inits TransactionDisplayer."""
-
-        self.car_app = car_app
+        TransactionBase.__init__(self, car_app)
         self.car_app.geometry(GEOMETRY_SIZE)
         self.car_app.title('Transaction Editor')
         self.car_app.configure(bg=shared.BG_COLOR)
+        cars_db.CarsDatabase(shared.DATABASE)
+        self.trans_db = transactions_db.TransactionsDatabase(shared.DATABASE)
 
-        cars_db.CarsDatabase(DATABASE)
-        trans_db = transactions_db.TransactionsDatabase(DATABASE)
+    def transactions(self):
+        """Displays all transactions that are in database."""
+        for i in self.table.get_children():
+            self.table.delete(i)
+        for row in self.trans_db.all_transactions():
+            self.table.insert('', tk.END, values=row)
 
-        def select_item(event):
-            """Stores an index of selected item."""
+    def remove_transaction(self):
+        """Removes selected transaction."""
+        try:
+            self.trans_db.remove_transaction(self.selected_item[COLS[0]])
+            self.transactions()
+        except TypeError:
+            pass
 
-            global selected_item
-            try:
-                if table.selection() != ():
-                    selected_item = table.set(table.selection())
-            except:
-                pass
+    def back(self):
+        """Turns back to Car Manager Panel."""
+        self.car_app.destroy()
+        self.car_app = tk.Tk()
+        car_window = cars.Cars(self.car_app)
+        car_window.init_window()
+        car_window.populate_list()
+        self.car_app.mainloop()
 
-        def my_trans():
-            """Displays all transactions that are in database."""
-            for i in table.get_children():
-                table.delete(i)
-            for row in trans_db.all_transactions():
-                table.insert('', tk.END, values=row)
-
-        def remove_transaction():
-            """Removes selected transaction."""
-            try:
-                trans_db.remove(selected_item[cols[0]])
-
-                my_trans()
-            except:
-                pass
-
-        def i_exit_fun():
-            """Finishes program."""
-
-            i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
-                                                 "Do you want to exit?")
-            if i_exit > 0:
-                car_app.destroy()
-                return
-
-        def back():
-            """Turns back to Car Manager Panel."""
-            self.car_app.destroy()
-            self.car_app = tk.Tk()
-            cars.Cars(self.car_app)
-            self.car_app.mainloop()
-
+    def init_window(self):
+        """Inits frames and buttons."""
         # Creating window
-
         main_frame = tk.Frame(self.car_app)
         main_frame.configure(bg=shared.BG_COLOR)
         main_frame.grid()
-
         # frames
 
         button_frame = tk.Frame(main_frame, width=735, height=40, bd=1, relief=tk.RIDGE,
@@ -88,35 +91,30 @@ class TransactionDisplayer:
 
         # creating table
 
-        cols = ('ID', 'NAME', 'SURNAME', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
-        col_size = [(25, 25), (100, 100), (100, 100), (50, 50), (100, 100), (50, 50), (50, 50),
-                    (50, 50), (111, 111)]
-        table = tkinter.ttk.Treeview(table_frame, columns=cols, show='headings', height=10)
-        table.grid()
+        self.table = tkinter.ttk.Treeview(table_frame, columns=COLS, show='headings', height=10)
+        self.table.grid()
 
-        for x, y in zip(cols, col_size):
-            table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
-            table.heading(x, text=x)
+        for x, y in zip(COLS, COL_SIZE):
+            self.table.column(x, minwidth=y[0], width=y[1], anchor=tk.CENTER)
+            self.table.heading(x, text=x)
 
         scroll_y = tk.Scrollbar(table_frame, orient=tk.VERTICAL)
-        scroll_y.configure(command=table.yview())
+        scroll_y.configure(command=self.table.yview())
         scroll_y.grid(row=0, column=3, sticky='ns')
 
-        table.configure(yscrollcommand=scroll_y.set)
-        table.bind('<ButtonRelease-1>', select_item)
+        self.table.configure(yscrollcommand=scroll_y.set)
+        self.table.bind('<ButtonRelease-1>', self.select_item)
 
         # buttons
 
-        back_btn = tk.Button(button_frame, text='< Back', width=15, command=back,
-                             bg=shared.BG_COLOR)
-        back_btn.grid(column=1, row=0, sticky=tk.W)
+        back_button = tk.Button(button_frame, text='< Back', width=15, command=self.back,
+                                bg=shared.BG_COLOR)
+        back_button.grid(column=1, row=0, sticky=tk.W)
 
-        book_btn = tk.Button(button_frame, text='Remove Transaction', width=15,
-                             command=remove_transaction, bg=shared.BG_COLOR)
-        book_btn.grid(column=2, row=0, sticky=tk.W)
+        book_button = tk.Button(button_frame, text='Remove Transaction', width=15,
+                                command=self.remove_transaction, bg=shared.BG_COLOR)
+        book_button.grid(column=2, row=0, sticky=tk.W)
 
-        exit_btn = tk.Button(button_frame, text='Exit', width=15, command=i_exit_fun,
-                             bg=BG_BUTTON)
-        exit_btn.grid(column=3, row=0, sticky=tk.W)
-
-        my_trans()
+        exit_button = tk.Button(button_frame, text='Exit', width=15, command=self.exit_fun,
+                                bg=shared.BG_BUTTON)
+        exit_button.grid(column=3, row=0, sticky=tk.W)

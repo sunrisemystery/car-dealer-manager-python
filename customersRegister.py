@@ -4,103 +4,104 @@ import tkinter.messagebox
 import customers_db
 import carsDisplayer
 import shared
-import mainTest2
+import customerLogin
 
 GEOMETRY_SIZE = '650x200'
-DATABASE = 'mydatavase.db'
-FONT_SIZE = ('calibri', 12)
-BG_BUTTON = 'HotPink3'
 
 
-class CustomerRegister:
+class CustomerRegister(customerLogin.CustomerBase):
     """This class displays Customer Registration Panel and contains
         functionality for buttons."""
 
-    def __init__(self, cust_app):
+    def __init__(self, customer_app):
         """Inits CustomerRegister."""
-        self.cust_app = cust_app
-        self.cust_app.geometry(GEOMETRY_SIZE)
-        self.cust_app.configure(bg=shared.BG_COLOR)
-        self.cust_app.title('Customer Registration Panel')
+        self.customer_app = customer_app
+        self.customer_app.geometry(GEOMETRY_SIZE)
+        self.customer_app.configure(bg=shared.BG_COLOR)
+        self.customer_app.title('Customer Registration Panel')
+        self.name_entry = None
+        self.lastname_entry = None
+        self.email_entry = None
+        self.access_key_entry = None
+        self.phone_entry = None
 
-        db = customers_db.CustomersDatabase(DATABASE)
+        self.name_text = tk.StringVar()
+        self.lastname_text = tk.StringVar()
+        self.email_text = tk.StringVar()
+        self.access_key_text = tk.StringVar()
+        self.phone_text = tk.StringVar()
 
-        def clear_text():
-            """Clears all entries."""
-            name_entry.delete(0, tk.END)
-            lastname_entry.delete(0, tk.END)
-            email_entry.delete(0, tk.END)
-            access_key_entry.delete(0, tk.END)
-            phone_entry.delete(0, tk.END)
+        self.TEXT_FIELDS = [self.name_text, self.lastname_text, self.email_text,
+                            self.access_key_text, self.phone_text]
 
-        def add_cust():
-            """Adds customer and checks if given data are correct. """
-            for field in TEXT_FIELDS:
-                if field.get() == '':
-                    tkinter.messagebox.showerror("Required Fields", "Please include all fields")
-                    return
-            try:
-                if not isinstance(int(access_key_text.get()), int):
-                    tkinter.messagebox.showerror("Access Key can't be a text",
-                                                 "Please write a numeric key")
-                    return
-            except:
+        self.d_base = customers_db.CustomersDatabase(shared.DATABASE)
+
+    def clear_text(self):
+        """Clears all entries."""
+        self.name_entry.delete(0, tk.END)
+        self.lastname_entry.delete(0, tk.END)
+        self.email_entry.delete(0, tk.END)
+        self.access_key_entry.delete(0, tk.END)
+        self.phone_entry.delete(0, tk.END)
+
+    def add_customer(self):
+        """Adds customer and checks if given data are correct. """
+        for field in self.TEXT_FIELDS:
+            if not field.get():
+                tkinter.messagebox.showerror("Required Fields", "Please include all fields")
+                return
+        try:
+            if not isinstance(int(self.access_key_text.get()), int):
                 tkinter.messagebox.showerror("Access Key can't be a text",
                                              "Please write a numeric key")
                 return
+        except ValueError:
+            tkinter.messagebox.showerror("Access Key can't be a text",
+                                         "Please write a numeric key")
+            return
 
-            try:
-                if not isinstance(int(phone_text.get()), int):
-                    tkinter.messagebox.showerror("Nuber can't include characters",
-                                                 "Please write your number using.. numbers :)")
-                    return
-            except:
-                tkinter.messagebox.showerror("Nuber can't include characters",
+        try:
+            if not isinstance(int(self.phone_text.get()), int):
+                tkinter.messagebox.showerror("Number can't include characters",
                                              "Please write your number using.. numbers :)")
                 return
-            if len(access_key_text.get()) < 3:
-                tkinter.messagebox.showerror("Access key fail",
-                                             "Access key must have at least 3 digits")
-                return
+        except ValueError:
+            tkinter.messagebox.showerror("Number can't include characters",
+                                         "Please write your number using.. numbers :)")
+            return
+        if len(self.access_key_text.get()) < shared.ACCESS_KEY_LENGTH:
+            tkinter.messagebox.showerror("Access key fail",
+                                         "Access key must have at least 3 digits")
+            return
 
-            if search_cust() != -1:
-                db.insert(name_text.get().capitalize(), lastname_text.get().capitalize(),
-                          email_text.get(),
-                          access_key_text.get(), phone_text.get())
+        if self.search_customer() != -1:
+            self.d_base.insert(self.name_text.get().capitalize(),
+                               self.lastname_text.get().capitalize(),
+                               self.email_text.get(),
+                               self.access_key_text.get(), self.phone_text.get())
 
-                tkinter.messagebox.showinfo("Registration Successful", "Success!")
-                shared.logged_id = db.get_id(email_text.get(), access_key_text.get())
+            tkinter.messagebox.showinfo("Registration Successful", "Success!")
+            shared.LOGGED_ID = self.d_base.get_id(self.email_text.get(), self.access_key_text.get())
 
-                self.cust_app.destroy()
-                self.cust_app = tk.Tk()
-                carsDisplayer.CarsDisplayer(self.cust_app)
-                self.cust_app.mainloop()
+            self.customer_app.destroy()
+            self.customer_app = tk.Tk()
+            car_display_window = carsDisplayer.CarsDisplayer(self.customer_app)
+            car_display_window.init_window()
+            car_display_window.populate_list()
+            self.customer_app.mainloop()
 
-        def search_cust():
-            """Checks if user with given email exists in database."""
+    def search_customer(self):
+        """Checks if user with given email exists in database."""
+        for row in self.d_base.search_email(self.email_text.get()):
+            if row:
+                tkinter.messagebox.showerror("Error", "This email is in this database")
+                return -1
+            return None
 
-            for row in db.search_email(email_text.get()):
-                if row:
-                    tkinter.messagebox.showerror("Error", "This email is in this database")
-                    return -1
-
-        def back():
-            """Turns back to login/registration panel."""
-            self.cust_app.destroy()
-            self.cust_app = tk.Tk()
-            mainTest2.MainTest(self.cust_app)
-
-            self.cust_app.mainloop()
-
-        def i_exit_fun():
-            """Finishes program."""
-            i_exit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
-            if i_exit > 0:
-                cust_app.destroy()
-                return
-
+    def init_window(self):
+        """Inits window and labels."""
         # frames
-        main_frame = tk.Frame(self.cust_app)
+        main_frame = tk.Frame(self.customer_app)
         main_frame.configure(bg=shared.BG_COLOR)
         main_frame.grid()
 
@@ -112,57 +113,55 @@ class CustomerRegister:
         button_frame.pack(side=tk.TOP)
 
         # entries
-        name_text = tk.StringVar()
-        name_label = tk.Label(data_frame, text='Name', font=FONT_SIZE, pady=20, bg=shared.BG_COLOR)
+
+        name_label = tk.Label(data_frame, text='Name', font=shared.FONT_SIZE, pady=20,
+                              bg=shared.BG_COLOR)
         name_label.grid(row=0, column=0, sticky=tk.E)
-        name_entry = tk.Entry(data_frame, textvariable=name_text, font=FONT_SIZE,
-                              bg=shared.LISTBOX_COLOR)
-        name_entry.grid(row=0, column=1)
+        self.name_entry = tk.Entry(data_frame, textvariable=self.name_text, font=shared.FONT_SIZE,
+                                   bg=shared.LISTBOX_COLOR)
+        self.name_entry.grid(row=0, column=1)
 
-        lastname_text = tk.StringVar()
-        lastname_label = tk.Label(data_frame, text='Lastname', font=FONT_SIZE, bg=shared.BG_COLOR)
+        lastname_label = tk.Label(data_frame, text='Lastname', font=shared.FONT_SIZE,
+                                  bg=shared.BG_COLOR)
         lastname_label.grid(row=0, column=2, sticky=tk.E, padx=(30, 0))
-        lastname_entry = tk.Entry(data_frame, textvariable=lastname_text, font=FONT_SIZE,
-                                  bg=shared.LISTBOX_COLOR)
-        lastname_entry.grid(row=0, column=3)
+        self.lastname_entry = tk.Entry(data_frame, textvariable=self.lastname_text,
+                                       font=shared.FONT_SIZE, bg=shared.LISTBOX_COLOR)
+        self.lastname_entry.grid(row=0, column=3)
 
-        email_text = tk.StringVar()
-        email_label = tk.Label(data_frame, text='Email', font=FONT_SIZE, bg=shared.BG_COLOR)
+        email_label = tk.Label(data_frame, text='Email', font=shared.FONT_SIZE, bg=shared.BG_COLOR)
         email_label.grid(row=1, column=0, sticky=tk.E)
-        email_entry = tk.Entry(data_frame, textvariable=email_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        email_entry.grid(row=1, column=1)
+        self.email_entry = tk.Entry(data_frame, textvariable=self.email_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.email_entry.grid(row=1, column=1)
 
-        access_key_text = tk.StringVar()
-        access_key_label = tk.Label(data_frame, text='Access Key', font=FONT_SIZE,
+        access_key_label = tk.Label(data_frame, text='Access Key', font=shared.FONT_SIZE,
                                     bg=shared.BG_COLOR)
         access_key_label.grid(row=1, column=2, sticky=tk.E)
-        access_key_entry = tk.Entry(data_frame, textvariable=access_key_text, font=FONT_SIZE,
-                                    bg=shared.LISTBOX_COLOR)
-        access_key_entry.grid(row=1, column=3)
+        self.access_key_entry = tk.Entry(data_frame, textvariable=self.access_key_text,
+                                         font=shared.FONT_SIZE, bg=shared.LISTBOX_COLOR)
+        self.access_key_entry.grid(row=1, column=3)
 
-        phone_text = tk.StringVar()
-        phone_label = tk.Label(data_frame, text='Phone Number', font=FONT_SIZE, pady=20,
+        phone_label = tk.Label(data_frame, text='Phone Number', font=shared.FONT_SIZE, pady=20,
                                bg=shared.BG_COLOR)
         phone_label.grid(row=2, column=0, sticky=tk.E)
-        phone_entry = tk.Entry(data_frame, textvariable=phone_text, font=FONT_SIZE,
-                               bg=shared.LISTBOX_COLOR)
-        phone_entry.grid(row=2, column=1)
+        self.phone_entry = tk.Entry(data_frame, textvariable=self.phone_text, font=shared.FONT_SIZE,
+                                    bg=shared.LISTBOX_COLOR)
+        self.phone_entry.grid(row=2, column=1)
 
         # buttons
 
-        add_btn = tk.Button(button_frame, text='Create Account', width=12, command=add_cust,
-                            bg=shared.BG_COLOR)
-        add_btn.grid(column=0, row=0, sticky=tk.W)
+        add_button = tk.Button(button_frame, text='Create Account', width=12,
+                               command=self.add_customer, bg=shared.BG_COLOR)
+        add_button.grid(column=0, row=0, sticky=tk.W)
 
-        clear_btn = tk.Button(button_frame, text='Clear', width=12, command=clear_text,
-                              bg=shared.BG_COLOR)
-        clear_btn.grid(column=1, row=0, sticky=tk.W)
+        clear_button = tk.Button(button_frame, text='Clear', width=12, command=self.clear_text,
+                                 bg=shared.BG_COLOR)
+        clear_button.grid(column=1, row=0, sticky=tk.W)
 
-        menu_btn = tk.Button(button_frame, text='Menu', width=12, command=back, bg=shared.BG_COLOR)
-        menu_btn.grid(column=2, row=0, sticky=tk.W)
+        menu_button = tk.Button(button_frame, text='Menu', width=12, command=self.back,
+                                bg=shared.BG_COLOR)
+        menu_button.grid(column=2, row=0, sticky=tk.W)
 
-        exit_btn = tk.Button(button_frame, text='Exit', width=12,
-                             command=i_exit_fun, bg=BG_BUTTON)
-        exit_btn.grid(column=3, row=0, sticky=tk.W)
-        TEXT_FIELDS = [name_text, lastname_text, email_text, access_key_text, phone_text]
+        exit_button = tk.Button(button_frame, text='Exit', width=12,
+                                command=self.exit_fun, bg=shared.BG_BUTTON)
+        exit_button.grid(column=3, row=0, sticky=tk.W)
