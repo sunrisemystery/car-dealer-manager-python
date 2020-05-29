@@ -1,7 +1,6 @@
 """Defines class responsible for Main Panel Window. """
 import tkinter as tk
-
-import customerLogin
+import customer_register_and_login
 import shared
 
 GEOMETRY_SIZE = '400x150'
@@ -48,16 +47,15 @@ class MainClass:
         """Displays Login Window."""
         self.main_app.destroy()
         self.main_app = tk.Tk()
-        login_window = customerLogin.CustomerLogin(self.main_app)
+        login_window = customer_register_and_login.CustomerLogin(self.main_app)
         login_window.init_window()
         self.main_app.mainloop()
 
     def register(self):
-        import customersRegister
         """Displays Registration Window."""
         self.main_app.destroy()
         self.main_app = tk.Tk()
-        register_window = customersRegister.CustomerRegister(self.main_app)
+        register_window = customer_register_and_login.CustomerRegister(self.main_app)
         register_window.init_window()
         self.main_app.mainloop()
 

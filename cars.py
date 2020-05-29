@@ -4,7 +4,7 @@ import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
 
-import adminTransactionsGUI
+import admin_transactions_gui
 import cars_db
 import shared
 
@@ -177,7 +177,7 @@ class Cars(CarsBase):
 
         self.car_app.destroy()
         self.car_app = tk.Tk()
-        all_transactions_window = adminTransactionsGUI.TransactionDisplayer(self.car_app)
+        all_transactions_window = admin_transactions_gui.TransactionDisplayer(self.car_app)
         all_transactions_window.init_window()
         all_transactions_window.transactions()
         self.car_app.mainloop()

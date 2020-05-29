@@ -5,8 +5,8 @@ import tkinter.ttk
 
 import cars
 import cars_db
-import customerEditAccount
-import customerTransactionGUI
+import customer_edit_account
+import customer_transaction_gui
 import shared
 import transactions_db
 
@@ -69,7 +69,7 @@ class CarsDisplayer(cars.CarsBase):
 
         self.car_app.destroy()
         self.car_app = tk.Tk()
-        my_transactions_window = customerTransactionGUI.TransactionCustomerDisplayer(self.car_app)
+        my_transactions_window = customer_transaction_gui.TransactionCustomerDisplayer(self.car_app)
         my_transactions_window.init_window()
         my_transactions_window.my_transactions()
         self.car_app.mainloop()
@@ -92,7 +92,7 @@ class CarsDisplayer(cars.CarsBase):
         """Turns to Customer Edit Account."""
         self.car_app.destroy()
         self.car_app = tk.Tk()
-        edit_account_window = customerEditAccount.CustomerEditAccount(self.car_app)
+        edit_account_window = customer_edit_account.CustomerEditAccount(self.car_app)
         edit_account_window.init_window()
         self.car_app.mainloop()
 

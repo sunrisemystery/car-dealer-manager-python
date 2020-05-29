@@ -1,15 +1,15 @@
-"""Tests for modules: customersRegister.py and cars_db.py"""
+"""Tests for modules: customer_register_and_login.py and cars_db.py"""
 import unittest
 import tkinter
 
-import customersRegister
+import customer_register_and_login
 
 
 class RegisterTest(unittest.TestCase):
     """Tests for clear_text function in CustomerRegister class."""
 
     def setUp(self) -> None:
-        self.customer = customersRegister.CustomerRegister(tkinter.Tk())
+        self.customer = customer_register_and_login.CustomerRegister(tkinter.Tk())
         self.customer.init_window()
 
     def test_clear_access_key(self):

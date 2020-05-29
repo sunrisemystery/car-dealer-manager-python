@@ -2,7 +2,7 @@
 import tkinter as tk
 import tkinter.messagebox
 
-import carsDisplayer
+import cars_displayer
 import customers_db
 import main
 import shared
@@ -70,7 +70,7 @@ class CustomerEditAccount:
 
         self.customer_app.destroy()
         self.customer_app = tk.Tk()
-        car_display_window = carsDisplayer.CarsDisplayer(self.customer_app)
+        car_display_window = cars_displayer.CarsDisplayer(self.customer_app)
         car_display_window.init_window()
         car_display_window.populate_list()
         self.customer_app.mainloop()
@@ -79,7 +79,7 @@ class CustomerEditAccount:
         """Turns to Available Car List."""
         self.customer_app.destroy()
         self.customer_app = tk.Tk()
-        cars_display_window = carsDisplayer.CarsDisplayer(self.customer_app)
+        cars_display_window = cars_displayer.CarsDisplayer(self.customer_app)
         cars_display_window.init_window()
         cars_display_window.populate_list()
         self.customer_app.mainloop()

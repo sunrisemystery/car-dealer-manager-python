@@ -3,8 +3,8 @@ import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
 
-import adminTransactionsGUI
-import carsDisplayer
+import admin_transactions_gui
+import cars_displayer
 import cars_db
 import shared
 import transactions_db
@@ -15,13 +15,13 @@ COL_SIZE = [(25, 25), (50, 50), (100, 100), (50, 50), (50, 50),
             (50, 50), (111, 111)]
 
 
-class TransactionCustomerDisplayer(adminTransactionsGUI.TransactionBase):
+class TransactionCustomerDisplayer(admin_transactions_gui.TransactionBase):
     """This class displays Transactions' Window for Customer and contains
         functionality for buttons."""
 
     def __init__(self, car_app):
         """Inits TransactionCustomerDisplayer."""
-        adminTransactionsGUI.TransactionBase.__init__(self, car_app)
+        admin_transactions_gui.TransactionBase.__init__(self, car_app)
         self.car_app.geometry(GEOMETRY_SIZE)
         self.car_app.configure(bg=shared.BG_COLOR)
         self.car_app.title('Transaction Viewer')
@@ -40,7 +40,7 @@ class TransactionCustomerDisplayer(adminTransactionsGUI.TransactionBase):
         """Turns back to Available Car List Panel."""
         self.car_app.destroy()
         self.car_app = tk.Tk()
-        car_display_window = carsDisplayer.CarsDisplayer(self.car_app)
+        car_display_window = cars_displayer.CarsDisplayer(self.car_app)
         car_display_window.init_window()
         car_display_window.populate_list()
         self.car_app.mainloop()
