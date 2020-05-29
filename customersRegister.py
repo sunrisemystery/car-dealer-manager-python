@@ -1,10 +1,11 @@
 """Defines class responsible for registration to the app. """
 import tkinter as tk
 import tkinter.messagebox
-import customers_db
+
 import carsDisplayer
-import shared
 import customerLogin
+import customers_db
+import shared
 
 GEOMETRY_SIZE = '650x200'
 
@@ -163,5 +164,5 @@ class CustomerRegister(customerLogin.CustomerBase):
         menu_button.grid(column=2, row=0, sticky=tk.W)
 
         exit_button = tk.Button(button_frame, text='Exit', width=12,
-                                command=self.exit_fun, bg=shared.BG_BUTTON)
+                                command=self.exit, bg=shared.BG_BUTTON)
         exit_button.grid(column=3, row=0, sticky=tk.W)

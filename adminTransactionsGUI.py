@@ -3,10 +3,11 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
+
 import cars
 import cars_db
-import transactions_db
 import shared
+import transactions_db
 
 GEOMETRY_SIZE = '800x450'
 COLS = ('ID', 'NAME', 'SURNAME', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
@@ -28,7 +29,7 @@ class TransactionBase:
         if self.table.selection():
             self.selected_item = self.table.set(self.table.selection())
 
-    def exit_fun(self):
+    def exit(self):
         """Finishes program."""
         exit_v = tkinter.messagebox.askyesno("Car Dealer Management Database System",
                                              "Do you want to exit?")
@@ -115,6 +116,6 @@ class TransactionDisplayer(TransactionBase):
                                 command=self.remove_transaction, bg=shared.BG_COLOR)
         book_button.grid(column=2, row=0, sticky=tk.W)
 
-        exit_button = tk.Button(button_frame, text='Exit', width=15, command=self.exit_fun,
+        exit_button = tk.Button(button_frame, text='Exit', width=15, command=self.exit,
                                 bg=shared.BG_BUTTON)
         exit_button.grid(column=3, row=0, sticky=tk.W)

@@ -16,7 +16,7 @@ class CarsDatabase:
                         color TEXT,
                         year INTEGER,
                         instock INTEGER NOT NULL DEFAULT 1,
-                            price REAL 
+                        price REAL 
                         )""")
         self.conn.commit()
 

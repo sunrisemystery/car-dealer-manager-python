@@ -1,10 +1,11 @@
 """Defines class responsible for editing Customer's data. """
 import tkinter as tk
 import tkinter.messagebox
-import customers_db
+
 import carsDisplayer
+import customers_db
+import main
 import shared
-import mainTest2
 
 GEOMETRY_SIZE = '600x200'
 
@@ -97,7 +98,7 @@ class CustomerEditAccount:
         """Turns back to login/registration panel."""
         self.customer_app.destroy()
         self.customer_app = tk.Tk()
-        main_window = mainTest2.MainTest(self.customer_app)
+        main_window = main.MainClass(self.customer_app)
         main_window.window_init()
 
         self.customer_app.mainloop()

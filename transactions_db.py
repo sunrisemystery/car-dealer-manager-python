@@ -1,5 +1,6 @@
 """Defines class responsible for transactions' table in database."""
 import sqlite3
+
 import cars_db
 import customers_db
 
@@ -17,8 +18,7 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
                 car_id INTEGER NOT NULL,
                 date DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-                FOREIGN KEY (car_id) REFERENCES cars(car_id)
-               
+                FOREIGN KEY (car_id) REFERENCES cars(car_id)             
                 )""")
         self.conn.commit()
 
@@ -34,7 +34,7 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
          cars.model,cars.color,cars.year,cars.price, transactions.date 
         FROM transactions 
         INNER JOIN cars 
-        ON transactions.car_id=cars.car_id 
+        USING (car_id)
         WHERE transactions.customer_id=? ''', (customer_id,))
         return self.c_cursor.fetchall()
 
@@ -45,9 +45,9 @@ class TransactionsDatabase(cars_db.CarsDatabase, customers_db.CustomersDatabase)
         transactions.date 
                 FROM transactions 
                 INNER JOIN cars 
-                ON transactions.car_id=cars.car_id
+                USING (car_id)
                 INNER JOIN customers
-                ON transactions.customer_id=customers.customer_id 
+                USING (customer_id)
                 ''')
         return self.c_cursor.fetchall()
 

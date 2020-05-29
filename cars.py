@@ -3,6 +3,7 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
+
 import adminTransactionsGUI
 import cars_db
 import shared
@@ -47,7 +48,7 @@ class CarsBase:
         self.year_entry.delete(0, tk.END)
         self.price_entry.delete(0, tk.END)
 
-    def exit_fun(self):
+    def exit(self):
         """Finishes program."""
         i_exit = tkinter.messagebox.askyesno("Car Dealer Management Database System",
                                              "Do you want to exit?")
@@ -105,7 +106,7 @@ class Cars(CarsBase):
         self.populate_list()
         self.clear_text()
 
-    def select_item_fun(self, event):
+    def select_item(self, event):
         """Fills fields with selected car's data."""
 
         if self.table.selection():
@@ -252,7 +253,7 @@ class Cars(CarsBase):
         scroll_y.grid(row=0, column=3, sticky='ns')
 
         self.table.configure(yscrollcommand=scroll_y.set)
-        self.table.bind('<ButtonRelease-1>', self.select_item_fun)
+        self.table.bind('<ButtonRelease-1>', self.select_item)
 
         # buttons
 
@@ -286,6 +287,6 @@ class Cars(CarsBase):
                                  bg=shared.BG_COLOR)
         trans_button.grid(column=6, row=0, sticky=tk.W)
 
-        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit_fun,
+        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit,
                                 bg=shared.BG_BUTTON)
         exit_button.grid(column=7, row=0, sticky=tk.W)

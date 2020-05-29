@@ -2,11 +2,12 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
-import cars_db
-import transactions_db
-import carsDisplayer
+
 import adminTransactionsGUI
+import carsDisplayer
+import cars_db
 import shared
+import transactions_db
 
 GEOMETRY_SIZE = '620x400'
 COLS = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE', 'DATE')
@@ -82,5 +83,5 @@ class TransactionCustomerDisplayer(adminTransactionsGUI.TransactionBase):
         back_button.grid(column=1, row=0, sticky=tk.W)
 
         exit_button = tk.Button(button_frame, text='Exit', width=12,
-                                command=self.exit_fun, bg=shared.BG_BUTTON)
+                                command=self.exit, bg=shared.BG_BUTTON)
         exit_button.grid(column=2, row=0, sticky=tk.W)

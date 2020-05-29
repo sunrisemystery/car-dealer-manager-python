@@ -15,8 +15,7 @@ class CustomersDatabase:
                         email TEXT,
                         access_key INTEGER NOT NULL,
                         permission INTEGER NOT NULL DEFAULT 1,
-                        phone TEXT
-                            
+                        phone TEXT                            
                         )""")
         self.conn.commit()
 

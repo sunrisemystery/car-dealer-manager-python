@@ -2,12 +2,13 @@
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.ttk
+
+import cars
 import cars_db
-import transactions_db
 import customerEditAccount
 import customerTransactionGUI
 import shared
-import cars
+import transactions_db
 
 GEOMETRY_SIZE = '735x450'
 COLS = ('ID', 'BRAND', 'MODEL', 'COLOR', 'YEAR', 'PRICE (PLN)')
@@ -194,6 +195,6 @@ class CarsDisplayer(cars.CarsBase):
                                 command=self.edit_account, bg=shared.BG_COLOR)
         edit_button.grid(column=5, row=0, sticky=tk.W)
 
-        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit_fun,
+        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit,
                                 bg=shared.BG_BUTTON)
         exit_button.grid(column=6, row=0, sticky=tk.W)

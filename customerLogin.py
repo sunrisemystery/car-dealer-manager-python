@@ -1,10 +1,11 @@
 """Defines class responsible for log in to the application. """
 import tkinter as tk
 import tkinter.messagebox
-import customers_db
-import carsDisplayer
-import mainTest2
+
 import cars
+import carsDisplayer
+import customers_db
+import main
 import shared
 
 GEOMETRY_SIZE = '420x200'
@@ -20,12 +21,12 @@ class CustomerBase:
         """Turns back to login/registration panel."""
         self.customer_app.destroy()
         self.customer_app = tk.Tk()
-        main_window = mainTest2.MainTest(self.customer_app)
+        main_window = main.MainClass(self.customer_app)
         main_window.window_init()
 
         self.customer_app.mainloop()
 
-    def exit_fun(self):
+    def exit(self):
         """Finishes program."""
         i_exit = tkinter.messagebox.askyesno("Registration Panel", "Do you want to exit?")
         if i_exit > 0:
@@ -137,6 +138,6 @@ class CustomerLogin(CustomerBase):
                                 bg=shared.BG_COLOR)
         menu_button.grid(column=2, row=0, sticky=tk.W)
 
-        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit_fun,
+        exit_button = tk.Button(button_frame, text='Exit', width=12, command=self.exit,
                                 bg=shared.BG_BUTTON)
         exit_button.grid(column=3, row=0, sticky=tk.W)
