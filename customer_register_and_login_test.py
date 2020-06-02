@@ -1,6 +1,7 @@
-"""Tests for modules: customer_register_and_login.py and cars_db.py"""
-import unittest
+"""Tests for module customer_register_and_login.py"""
 import tkinter
+import unittest
+
 
 import customer_register_and_login
 

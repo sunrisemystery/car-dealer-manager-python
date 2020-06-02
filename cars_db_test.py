@@ -1,3 +1,4 @@
+"""Tests for module cars_db.py"""
 import unittest
 
 import cars_db
