@@ -17,6 +17,7 @@ To log in as an administrator:
 In Login section:
 
 email: admin
+
 access key: admin
 
 To log in as a customer you can use test account or create your own.
@@ -24,6 +25,7 @@ To log in as a customer you can use test account or create your own.
 In Login section:
 
 email: user@user.com
+
 access key: 1234
 
 
